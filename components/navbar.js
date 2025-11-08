@@ -64,8 +64,8 @@ class CustomNavbar extends HTMLElement {
       </style>
       <nav>
         <div class="container">
-          <a href="/" class="logo">
-            <i data-feather="globe" class="logo-icon"></i>
+          <a href="index.html" class="logo">
+            <img src="logo.jpg" alt="GEOSPECTRA Logo" class="h-8 mr-2">
             GEOSPECTRA
           </a>
           <div class="nav-links">
