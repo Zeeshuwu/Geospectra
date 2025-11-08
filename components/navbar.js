@@ -69,7 +69,7 @@ class CustomNavbar extends HTMLElement {
             GEOSPECTRA
           </a>
           <div class="nav-links">
-            # <a href="/Geospectra/index.html" class="nav-link">Home</a>
+            <a href="/Geospectra/index.html" class="nav-link">Home</a>
             <a href="/Geospectra/tools.html" class="nav-link">Tools</a>
             <a href="/Geospectra/about.html" class="nav-link">About</a>
             <a href="/Geospectra/team.html" class="nav-link">Meet Our Team</a>
