@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GEOSPECTRA | Roof Segmentation Tool</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js"></script>
+    <link href="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css" rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="font-inter bg-gray-50">
+    <custom-navbar></custom-navbar>
+    
+    <main class="min-h-screen">
+        <!-- Tool Header -->
+        <section class="bg-white py-6 border-b border-gray-200">
+            <div class="container mx-auto px-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-800">GEOSPECTRA Roof Segmentation</h1>
+                        <div class="flex items-center mt-2">
+                            <span class="text-sm font-medium text-gray-500">Step 1 of 3</span>
+                            <div class="w-24 h-1.5 bg-gray-200 rounded-full overflow-hidden mx-3">
+                                <div class="h-full bg-gradient-to-r from-green-500 to-green-600" style="width: 33%"></div>
+                            </div>
+                            <span class="text-xs text-gray-400">Segmentation → Classification → 3D Analysis</span>
+                        </div>
+                    </div>
+                    <a href="tools.html" class="text-sm font-medium text-green-600 hover:text-green-800 flex items-center">
+                        <i data-feather="arrow-left" class="w-4 h-4 mr-1"></i>
+                        Back to Tools
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Content -->
+        <div class="container mx-auto px-6 py-8">
+            <div class="flex flex-col lg:flex-row gap-8">
+                <!-- Map Area (70%) -->
+                <div class="lg:w-3/4">
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
+                        <div class="bg-gradient-to-r from-green-500 to-green-600 text-white p-4">
+                            <h3 class="text-lg font-semibold flex items-center">
+                                <i data-feather="map" class="w-5 h-5 mr-2"></i>
+                                Interactive Region Selection
+                            </h3>
+                            <p class="text-sm opacity-90 mt-1">Draw your region of interest to begin satellite imagery analysis</p>
+                        </div>
+                        <div id="map" class="w-full h-96 lg:h-[600px]"></div>
+                    </div>
+                </div>
+                
+                <!-- Control Panel (30%) -->
+                <div class="lg:w-1/4">
+                    <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+                        <h3 class="text-lg font-semibold mb-4 flex items-center text-gray-800">
+                            <i data-feather="settings" class="w-5 h-5 mr-2 text-green-600"></i>
+                            Analysis Parameters
+                        </h3>
+                        
+                        <div class="space-y-6">
+                            <!-- Basemap Selection -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    <i data-feather="layers" class="w-4 h-4 inline mr-1"></i>
+                                    Basemap Layer
+                                </label>
+                                <select class="w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500">
+                                    <option>🛰️ Satellite Imagery</option>
+                                    <option>🗺️ OpenStreetMap</option>
+                                    <option>🏔️ Terrain</option>
+                                </select>
+                            </div>
+                            
+                            <!-- ROI Tools -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    <i data-feather="edit-3" class="w-4 h-4 inline mr-1"></i>
+                                    Region of Interest Tools
+                                </label>
+                                <div class="grid grid-cols-3 gap-2">
+                                    <button class="bg-gray-100 hover:bg-green-100 text-gray-800 hover:text-green-800 py-2 px-3 rounded-md text-sm flex items-center justify-center transition duration-200">
+                                        <i data-feather="square" class="w-4 h-4 mr-1"></i>
+                                        Rectangle
+                                    </button>
+                                    <button class="bg-gray-100 hover:bg-green-100 text-gray-800 hover:text-green-800 py-2 px-3 rounded-md text-sm flex items-center justify-center transition duration-200">
+                                        <i data-feather="hexagon" class="w-4 h-4 mr-1"></i>
+                                        Polygon
+                                    </button>
+                                    <button class="bg-gray-100 hover:bg-green-100 text-gray-800 hover:text-green-800 py-2 px-3 rounded-md text-sm flex items-center justify-center transition duration-200">
+                                        <i data-feather="circle" class="w-4 h-4 mr-1"></i>
+                                        Circle
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Imagery Parameters -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    <i data-feather="satellite" class="w-4 h-4 inline mr-1"></i>
+                                    Satellite Data Source
+                                </label>
+                                <select class="w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500">
+                                    <option>Sentinel-2 (10m resolution)</option>
+                                    <option>Landsat 8 (30m resolution)</option>
+                                    <option>Custom Upload</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Date Range -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    <i data-feather="calendar" class="w-4 h-4 inline mr-1"></i>
+                                    Date Range
+                                </label>
+                                <div class="flex gap-2">
+                                    <input type="date" class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 text-sm">
+                                    <span class="flex items-center text-gray-500 text-sm">to</span>
+                                    <input type="date" class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 text-sm">
+                                </div>
+                            </div>
+                            
+                            <!-- Cloud Coverage -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    <i data-feather="cloud" class="w-4 h-4 inline mr-1"></i>
+                                    Max Cloud Coverage
+                                </label>
+                                <input type="range" min="0" max="100" value="20" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-green">
+                                <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                    <span>0%</span>
+                                    <span class="font-medium text-green-600">20%</span>
+                                    <span>100%</span>
+                                </div>
+                            </div>
+                            
+                            <!-- AI Model Selection -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    <i data-feather="cpu" class="w-4 h-4 inline mr-1"></i>
+                                    AI Segmentation Model
+                                </label>
+                                <select class="w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500">
+                                    <option>DeepLab v3+ (Recommended)</option>
+                                    <option>U-Net Architecture</option>
+                                    <option>Mask R-CNN</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Processing Status -->
+                            <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                                <h4 class="text-sm font-medium text-gray-700 mb-2">Processing Status</h4>
+                                <div class="text-sm text-gray-600">
+                                    <div class="flex items-center mb-1">
+                                        <div class="w-2 h-2 bg-gray-300 rounded-full mr-2"></div>
+                                        ROI Selection: Pending
+                                    </div>
+                                    <div class="flex items-center mb-1">
+                                        <div class="w-2 h-2 bg-gray-300 rounded-full mr-2"></div>
+                                        Imagery Download: Waiting
+                                    </div>
+                                    <div class="flex items-center">
+                                        <div class="w-2 h-2 bg-gray-300 rounded-full mr-2"></div>
+                                        AI Segmentation: Ready
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Run Button -->
+                            <button class="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white py-3 px-4 rounded-lg font-medium transition duration-300 shadow-md flex items-center justify-center">
+                                <i data-feather="play" class="w-5 h-5 mr-2"></i>
+                                Run GEOSPECTRA Segmentation
+                            </button>
+                            
+                            <!-- Help Section -->
+                            <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                                <h4 class="text-sm font-medium text-green-800 mb-2 flex items-center">
+                                    <i data-feather="help-circle" class="w-4 h-4 mr-1"></i>
+                                    Quick Guide
+                                </h4>
+                                <ul class="text-xs text-green-700 space-y-1">
+                                    <li>1. Select your preferred basemap</li>
+                                    <li>2. Draw a region of interest on the map</li>
+                                    <li>3. Configure analysis parameters</li>
+                                    <li>4. Click "Run Segmentation" to start</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <custom-footer></custom-footer>
+    
+    <script src="components/navbar.js"></script>
+    <script src="components/footer.js"></script>
+    <script>
+        feather.replace();
+        // Initialize Map with BING Maps
+        const map = new maplibregl.Map({
+            container: 'map',
+            style: 'https://atlas.microsoft.com/map/tile/png?api-version=2&tilesetId=microsoft.imagery&zoom={z}&x={x}&y={y}&subscription-key=YOUR_BING_KEY',
+            center: [112.6304, -7.9797], // Malang coordinates
+            zoom: 12
+        });
+
+        // Add drawing controls
+        const draw = new MapboxDraw({
+            displayControlsDefault: false,
+            controls: {
+                polygon: true,
+                trash: true
+            }
+        });
+        map.addControl(draw);
+
+        // Add navigation controls
+        map.addControl(new maplibregl.NavigationControl());
+        map.addControl(new maplibregl.FullscreenControl());
+
+        // Update processing status
+        function updateProcessingStatus(step, status) {
+            const steps = document.querySelectorAll('.processing-step');
+            steps.forEach((el, i) => {
+                if (i < step) {
+                    el.querySelector('.status-dot').style.backgroundColor = '#27ae60';
+                    el.textContent = el.textContent.replace('Pending', 'Completed')
+                                                  .replace('Waiting', 'Completed');
+                } else if (i === step) {
+                    el.querySelector('.status-dot').style.backgroundColor = '#f39c12';
+                    el.textContent = el.textContent.replace('Pending', 'Processing')
+                                                  .replace('Waiting', 'Processing');
+                }
+            });
+        }
+
+        // Run segmentation with U-Net model
+        document.querySelector('button[class*="Run GEOSPECTRA"]').addEventListener('click', function() {
+            const roi = draw.getAll();
+            if (!roi.features.length) {
+                alert('Please draw a region of interest first!');
+                return;
+            }
+
+            // Update status
+            updateProcessingStatus(0, 'processing');
+            
+            // Simulate processing steps
+            setTimeout(() => {
+                updateProcessingStatus(1, 'processing');
+                
+                setTimeout(() => {
+                    updateProcessingStatus(2, 'processing');
+                    
+                    // Show success and redirect
+                    setTimeout(() => {
+                        alert('Segmentation completed successfully using U-Net model!');
+                        window.location.href = 'result1.html'; // Will show local TIFF file
+                    }, 1000);
+                }, 1500);
+            }, 1000);
+        });
+</script>
+</body>
+</html>

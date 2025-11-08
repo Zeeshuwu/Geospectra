@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GEOSPECTRA Analysis Tools</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="font-inter bg-gray-50">
+    <custom-navbar></custom-navbar>
+    
+    <main class="min-h-screen py-12">
+        <div class="container mx-auto px-6">
+            <!-- Page Header -->
+            <div class="mb-12 text-center">
+                <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">GEOSPECTRA Analysis Workflow</h1>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">Select a tool to begin your comprehensive spatial intelligence analysis</p>
+            </div>
+            
+            <!-- Workflow Progress -->
+            <div class="bg-white rounded-xl shadow-md p-8 border border-gray-200 mb-12">
+                <h2 class="text-2xl font-semibold mb-6 text-gray-800">Sequential Analysis Pipeline</h2>
+                <div class="flex flex-col md:flex-row items-center justify-between">
+                    <div class="text-center mb-8 md:mb-0">
+                        <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i data-feather="layers" class="text-green-600 w-8 h-8"></i>
+                        </div>
+                        <h4 class="font-medium text-gray-800">Roof Segmentation</h4>
+                        <p class="text-sm text-gray-600">Extract building footprints</p>
+                    </div>
+                    
+                    <i data-feather="arrow-right" class="text-gray-400 w-8 h-8 mx-4 hidden md:block"></i>
+                    <i data-feather="arrow-down" class="text-gray-400 w-8 h-8 my-2 md:hidden"></i>
+                    
+                    <div class="text-center mb-8 md:mb-0">
+                        <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i data-feather="home" class="text-orange-600 w-8 h-8"></i>
+                        </div>
+                        <h4 class="font-medium text-gray-800">Roof Classification</h4>
+                        <p class="text-sm text-gray-600">Classify materials & estimate taxes</p>
+                    </div>
+                    
+                    <i data-feather="arrow-right" class="text-gray-400 w-8 h-8 mx-4 hidden md:block"></i>
+                    <i data-feather="arrow-down" class="text-gray-400 w-8 h-8 my-2 md:hidden"></i>
+                    
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-gradient-to-br from-green-100 to-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i data-feather="sun" class="text-green-600 w-8 h-8"></i>
+                        </div>
+                        <h4 class="font-medium text-gray-800">3D Solar Analysis</h4>
+                        <p class="text-sm text-gray-600">Calculate PV potential</p>
+                    </div>
+                </div>
+            </div>
+        <!-- Demo Showcase Section -->
+        <section class="py-20 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-4">See The Demo</h2>
+                    <p class="text-lg text-gray-600 max-w-2xl mx-auto">Explore our AI-powered analysis results</p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8 mb-12">
+                    <div class="bg-gray-50 rounded-xl p-6 border border-gray-200">
+                        <h3 class="text-xl font-semibold mb-4 text-gray-800">Roof Segmentation Results</h3>
+                        <video controls class="w-full rounded-lg mb-4">
+                            <source src="static/demos/segmentation.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                        <img src="static/demos/segmentation-result.jpg" alt="Segmentation Result" class="w-full rounded-lg">
+                    </div>
+                    
+                    <div class="bg-gray-50 rounded-xl p-6 border border-gray-200">
+                        <h3 class="text-xl font-semibold mb-4 text-gray-800">Roof Classification Results</h3>
+                        <video controls class="w-full rounded-lg mb-4">
+                            <source src="static/demos/classification.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                        <img src="static/demos/classification-result.jpg" alt="Classification Result" class="w-full rounded-lg">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tools Grid -->
+        <div class="grid md:grid-cols-3 gap-8 mb-16">
+<!-- Tool 1: Roof Segmentation -->
+                <div id="segmentation" class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 hover:shadow-lg transition duration-300">
+                    <div class="h-48 bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center">
+                        <i data-feather="layers" class="text-white w-12 h-12"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-3 text-gray-800">Roof Segmentation</h3>
+                        <p class="text-gray-600 mb-4">Extract building footprints from satellite imagery using advanced AI segmentation algorithms with high precision.</p>
+                        <div class="mb-4">
+                            <div class="text-sm text-gray-500 mb-2">Features:</div>
+                            <ul class="text-sm text-gray-600 space-y-1">
+                                <li>• ROI selection tools</li>
+                                <li>• Multiple satellite sources</li>
+                                <li>• AI-powered segmentation</li>
+                            </ul>
+                        </div>
+                        <a href="tool1-segmentation.html" class="block w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white text-center py-3 rounded-lg font-medium transition duration-300 shadow-md">
+                            Start Segmentation
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Tool 2: Roof Classification -->
+                <div id="classification" class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 hover:shadow-lg transition duration-300">
+                    <div class="h-48 bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center">
+                        <i data-feather="home" class="text-white w-12 h-12"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-3 text-gray-800">Roof Classification & Tax Estimation</h3>
+                        <p class="text-gray-600 mb-4">Classify roof materials and estimate property taxes based on building characteristics and local regulations.</p>
+                        <div class="mb-4">
+                            <div class="text-sm text-gray-500 mb-2">Features:</div>
+                            <ul class="text-sm text-gray-600 space-y-1">
+                                <li>• Material classification</li>
+                                <li>• Tax value estimation</li>
+                                <li>• Statistical analysis</li>
+                            </ul>
+                        </div>
+                        <div class="mb-3 text-xs text-gray-500 bg-gray-100 p-2 rounded">
+                            Requires: Tool 1 results
+                        </div>
+                        <a href="tool2-classification.html" class="block w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white text-center py-3 rounded-lg font-medium transition duration-300 shadow-md">
+                            Start Classification
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Tool 3: 3D Solar Analysis -->
+                <div id="solar" class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 hover:shadow-lg transition duration-300">
+                    <div class="h-48 bg-gradient-to-br from-green-400 to-orange-500 flex items-center justify-center">
+                        <i data-feather="sun" class="text-white w-12 h-12"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-3 text-gray-800">3D Visualization & Solar Analysis</h3>
+                        <p class="text-gray-600 mb-4">Generate 3D building models and calculate comprehensive photovoltaic potential with economic analysis.</p>
+                        <div class="mb-4">
+                            <div class="text-sm text-gray-500 mb-2">Features:</div>
+                            <ul class="text-sm text-gray-600 space-y-1">
+                                <li>• 3D building visualization</li>
+                                <li>• Solar potential analysis</li>
+                                <li>• Economic feasibility</li>
+                            </ul>
+                        </div>
+                        <div class="mb-3 text-xs text-gray-500 bg-gray-100 p-2 rounded">
+                            Requires: Tool 2 results
+                        </div>
+                        <a href="3d-viewer.html" class="block w-full bg-gradient-to-r from-green-400 to-orange-500 hover:from-green-500 hover:to-orange-600 text-white text-center py-3 rounded-lg font-medium transition duration-300 shadow-md">
+                            Explore 3D Visualization
+                        </a>
+</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <custom-footer></custom-footer>
+    
+    <script src="components/navbar.js"></script>
+    <script src="components/footer.js"></script>
+    <script>
+        feather.replace();
+    </script>
+</body>
+</html>

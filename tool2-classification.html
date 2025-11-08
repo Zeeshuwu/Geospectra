@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GEOSPECTRA | Roof Classification Tool</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="font-inter bg-gray-50">
+    <custom-navbar></custom-navbar>
+    
+    <main class="min-h-screen">
+        <!-- Tool Header -->
+        <section class="bg-white py-6 border-b border-gray-200">
+            <div class="container mx-auto px-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-800">GEOSPECTRA Roof Classification</h1>
+                        <div class="flex items-center mt-2">
+                            <span class="text-sm font-medium text-gray-500">Step 2 of 3</span>
+                            <div class="w-24 h-1.5 bg-gray-200 rounded-full overflow-hidden mx-3">
+                                <div class="h-full bg-gradient-to-r from-orange-500 to-orange-600" style="width: 66%"></div>
+                            </div>
+                            <span class="text-xs text-gray-400">Segmentation → Classification → 3D Analysis</span>
+                        </div>
+                    </div>
+                    <a href="tools.html" class="text-sm font-medium text-orange-600 hover:text-orange-800 flex items-center">
+                        <i data-feather="arrow-left" class="w-4 h-4 mr-1"></i>
+                        Back to Tools
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Content -->
+        <div class="container mx-auto px-6 py-8">
+            <div class="bg-white rounded-xl shadow-lg p-8 border border-gray-200 max-w-3xl mx-auto">
+                <div class="text-center mb-8">
+                    <div class="w-20 h-20 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i data-feather="home" class="text-orange-600 w-10 h-10"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-800 mb-2">Upload Segmentation Results</h2>
+                    <p class="text-gray-600">Upload the TIFF file from your roof segmentation to automatically classify roof materials and estimate taxes.</p>
+                </div>
+                
+                <div class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center mb-8">
+                    <i data-feather="upload" class="w-12 h-12 text-gray-400 mx-auto mb-4"></i>
+                    <p class="text-gray-600 mb-4">Drag & drop your segmentation TIFF file here or click to browse</p>
+                    <input type="file" id="segmentation-upload" accept=".tif,.tiff" class="hidden">
+                    <label for="segmentation-upload" class="inline-block bg-orange-100 hover:bg-orange-200 text-orange-700 px-6 py-2 rounded-lg font-medium cursor-pointer transition duration-300">
+                        Select File
+                    </label>
+                </div>
+                
+                <div class="bg-gray-50 rounded-lg p-4 border border-gray-200 mb-8">
+                    <h4 class="text-sm font-medium text-gray-700 mb-2">Processing Status</h4>
+                    <div class="text-sm text-gray-600">
+                        <div class="flex items-center mb-1">
+                            <div class="w-2 h-2 bg-gray-300 rounded-full mr-2 status-dot"></div>
+                            <span id="status-1">File Upload: Pending</span>
+                        </div>
+                        <div class="flex items-center mb-1">
+                            <div class="w-2 h-2 bg-gray-300 rounded-full mr-2 status-dot"></div>
+                            <span id="status-2">Material Classification: Waiting</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-2 h-2 bg-gray-300 rounded-full mr-2 status-dot"></div>
+                            <span id="status-3">Tax Estimation: Waiting</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <button id="run-classification" class="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white py-3 px-4 rounded-lg font-medium transition duration-300 shadow-md flex items-center justify-center">
+                    <i data-feather="play" class="w-5 h-5 mr-2"></i>
+                    Run GEOSPECTRA Classification
+                </button>
+                
+                <div class="mt-4 text-xs text-gray-500">
+                    <p>By proceeding, you agree that the classification will use our pre-trained model to analyze roof materials and estimate taxes based on local regulations.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <custom-footer></custom-footer>
+    
+    <script src="components/navbar.js"></script>
+    <script src="components/footer.js"></script>
+    <script>
+        feather.replace();
+        
+        // Handle file upload
+        document.getElementById('segmentation-upload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                document.getElementById('status-1').textContent = 'File Upload: Completed';
+                document.querySelector('#status-1 + div .status-dot').style.backgroundColor = '#27ae60';
+            }
+        });
+        
+        // Run classification
+        document.getElementById('run-classification').addEventListener('click', function() {
+            const fileInput = document.getElementById('segmentation-upload');
+            if (!fileInput.files.length) {
+                alert('Please upload a segmentation file first!');
+                return;
+            }
+            
+            // Update status
+            document.getElementById('status-2').textContent = 'Material Classification: Processing';
+            document.querySelector('#status-2 + div .status-dot').style.backgroundColor = '#f39c12';
+            
+            // Simulate processing
+            setTimeout(() => {
+                document.getElementById('status-2').textContent = 'Material Classification: Completed';
+                document.querySelector('#status-2 + div .status-dot').style.backgroundColor = '#27ae60';
+                document.getElementById('status-3').textContent = 'Tax Estimation: Processing';
+                document.querySelector('#status-3 + div .status-dot').style.backgroundColor = '#f39c12';
+                
+                setTimeout(() => {
+                    document.getElementById('status-3').textContent = 'Tax Estimation: Completed';
+                    document.querySelector('#status-3 + div .status-dot').style.backgroundColor = '#27ae60';
+                    
+                    // Redirect to results
+                    setTimeout(() => {
+                        window.location.href = 'result2.html'; // Will show classification results
+                    }, 1000);
+                }, 1500);
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
