@@ -1,4 +1,5 @@
-# 🌍 GEOSPECTRA - Advanced Geospatial Analysis Platform
+```markdown
+#  GEOSPECTRA - Advanced Geospatial Analysis Platform
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
 [![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/HTML)
@@ -8,18 +9,17 @@
 
 **GEOSPECTRA** is a cutting-edge web-based platform for advanced geospatial analysis, specializing in AI-powered roof segmentation, building classification, and 3D solar potential analysis. Built for the ASEAN Geospatial Challenge, this platform combines satellite imagery processing with machine learning to deliver precise spatial intelligence.
 
-## 🚀 Features
+##  Features
 
-### 🏠 **Roof Segmentation Tool**
+###  **Building Segmentation Tool**
 - **AI-Powered Detection**: Advanced U-Net architecture for precise building segmentation
 - **Interactive ROI Selection**: Draw rectangles, polygons, or circles on satellite imagery
 - **Multi-Source Imagery**: Support for Google Satellite, Landsat 8, and custom uploads
 - **Real-time Processing**: Live progress tracking with step-by-step analysis
 - **High Accuracy**: 94.2% model accuracy with sub-meter resolution
 
-### 🏢 **Building Classification**
-- **Smart Categorization**: Automatic classification of building types
-- **Material Analysis**: Roof material detection and classification
+###  **Roof Classification**
+- **Material Analysis**: Utilizing U-Net for Roof material detection and classification
 - **Statistical Insights**: Comprehensive building analytics and metrics
 - **Export Capabilities**: Download results in multiple formats
 
@@ -41,6 +41,7 @@
 
 ## 📁 Project Structure
 
+```
 GEOSPECTRA/
 ├── components/           # Reusable UI components
 │   ├── navbar.js        # Navigation component
@@ -58,7 +59,7 @@ GEOSPECTRA/
 ├── malang_buildings_3d_fixed.json  # 3D building data
 ├── LICENSE              # MIT License
 └── README.md           # Project documentation
-
+```
 
 ## 🚀 Quick Start
 
@@ -72,77 +73,89 @@ GEOSPECTRA/
    ```bash
    git clone https://github.com/yourusername/geospectra.git
    cd geospectra
-2. Open in browser
+   ```
 
-Copy
-# Option 1: Direct file opening
-open index.html
+2. **Open in browser**
+   ```bash
+   # Option 1: Direct file opening
+   open index.html
+   
+   # Option 2: Local server (recommended)
+   python -m http.server 8000
+   # Then visit http://localhost:8000
+   ```
 
-# Option 2: Local server (recommended)
-python -m http.server 8000
-# Then visit http://localhost:8000
-Start analyzing!
+3. **Start analyzing!**
+   - Navigate to the Tools section
+   - Select your analysis type
+   - Draw your region of interest
+   - Run the analysis
 
-Navigate to the Tools section
-Select your analysis type
-Draw your region of interest
-Run the analysis
-📖 Usage Guide
-🎯 Roof Segmentation Workflow
-Select Analysis Area
+## 📖 Usage Guide
 
-Choose your preferred basemap (Satellite/OSM/Terrain)
-Use drawing tools to define your Region of Interest (ROI)
-Configure analysis parameters
-Configure Parameters
+### 🎯 **Roof Segmentation Workflow**
 
-Set date range for imagery
-Adjust cloud coverage threshold
-Select AI segmentation model
-Run Analysis
+1. **Select Analysis Area**
+   - Choose your preferred basemap (Satellite/OSM/Terrain)
+   - Use drawing tools to define your Region of Interest (ROI)
+   - Configure analysis parameters
 
-Click "Run GEOSPECTRA Segmentation"
-Monitor real-time processing status
-View results in interactive gallery
-Export Results
+2. **Configure Parameters**
+   - Set date range for imagery
+   - Adjust cloud coverage threshold
+   - Select AI segmentation model
 
-Download segmented imagery
-Export statistical data
-Continue to classification workflow
-🏗️ Building Classification
-Import segmentation results or upload new imagery
-Configure classification parameters
-Run AI-powered building type detection
-Review and export classification results
-☀️ 3D Solar Analysis
-Load 3D building models
-Configure solar analysis parameters
-Run comprehensive solar potential analysis
-Explore interactive 3D visualizations
-🌟 Key Capabilities
-🎯 Precision: Sub-meter accuracy in building detection
-⚡ Speed: Real-time processing with optimized algorithms
-🌐 Scalability: Handle large-scale urban analysis
-📊 Analytics: Comprehensive statistical insights
-🔄 Integration: Seamless workflow between analysis tools
-📱 Responsive: Works on desktop, tablet, and mobile devices
-🏆 ASEAN Geospatial Challenge
-This platform was developed for the ASEAN Geospatial Challenge, focusing on:
+3. **Run Analysis**
+   - Click "Run GEOSPECTRA Segmentation"
+   - Monitor real-time processing status
+   - View results in interactive gallery
 
-Advanced spatial intelligence solutions
-AI-powered geospatial analysis
-Sustainable urban development
-Solar energy potential mapping
-Smart city applications
-👥 Team
-GEOSPECTRA Team
+4. **Export Results**
+   - Download segmented imagery
+   - Export statistical data
+   - Continue to classification workflow
 
-Department of Geodetic Engineering
-Universitas Gadjah Mada
-Yogyakarta, Indonesia
-📊 Performance Metrics
-Building Detection Accuracy: 94.2%
-Processing Speed: < 10 seconds for typical ROI
-Resolution Support: 0.5m/pixel to 30m/pixel
-Coverage: Global satellite imagery access
-Formats Supported: GeoTIFF, PNG, JPEG, GeoJSON
+### 🏗️ **Building Classification**
+
+1. Import segmentation results or upload new imagery
+2. Configure classification parameters
+3. Run AI-powered building type detection
+4. Review and export classification results
+
+### ☀️ **3D Solar Analysis**
+
+1. Load 3D building models
+2. Configure solar analysis parameters
+3. Run comprehensive solar potential analysis
+4. Explore interactive 3D visualizations
+
+## 🌟 Key Capabilities
+
+- **🎯 Precision**: Sub-meter accuracy in building detection
+- **⚡ Speed**: Real-time processing with optimized algorithms
+- **🌐 Scalability**: Handle large-scale urban analysis
+- **📊 Analytics**: Comprehensive statistical insights
+- **🔄 Integration**: Seamless workflow between analysis tools
+- **📱 Responsive**: Works on desktop, tablet, and mobile devices
+
+## 🏆 ASEAN Geospatial Challenge
+
+This platform was developed for the **ASEAN Geospatial Challenge**, focusing on:
+- Advanced spatial intelligence solutions
+- AI-powered geospatial analysis
+- Sustainable urban development
+- Solar energy potential mapping
+- Smart city applications
+
+## 👥 Team
+
+**GEOSPECTRA Team**
+- Department of Geodetic Engineering
+- Universitas Gadjah Mada
+- Yogyakarta, Indonesia
+
+## 📊 Performance Metrics
+
+- **Building Detection Accuracy**: 94.2%
+- **Processing Speed**: < 10 seconds for typical ROI
+- **Resolution Support**: 0.5m/pixel to 30m/pixel
