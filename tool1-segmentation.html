@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GEOSPECTRA | Roof Segmentation Tool</title>
+    <title>GEOSPECTRA |  Segmentation Tool</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js"></script>
@@ -15,7 +15,7 @@
     <custom-navbar></custom-navbar>
     
     <main class="min-h-screen">
-        <!-- Tool Header -->
+        
         <section class="bg-white py-6 border-b border-gray-200">
             <div class="container mx-auto px-6">
                 <div class="flex items-center justify-between">
@@ -37,10 +37,10 @@
             </div>
         </section>
 
-        <!-- Main Content -->
+        
         <div class="container mx-auto px-6 py-8">
             <div class="flex flex-col lg:flex-row gap-8">
-                <!-- Map Area (70%) -->
+                
                 <div class="lg:w-3/4">
                     <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
                         <div class="bg-gradient-to-r from-green-500 to-green-600 text-white p-4">
@@ -69,10 +69,10 @@
                                     <i data-feather="layers" class="w-4 h-4 inline mr-1"></i>
                                     Basemap Layer
                                 </label>
-                                <select class="w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500">
-                                    <option>🛰️ Satellite Imagery</option>
-                                    <option>🗺️ OpenStreetMap</option>
-                                    <option>🏔️ Terrain</option>
+                                <select id="basemapSelect" class="w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500">
+                                    <option value="satellite">🛰️ Satellite Imagery</option>
+                                    <option value="osm">🗺️ OpenStreetMap</option>
+                                    <option value="terrain">🏔️ Terrain</option>
                                 </select>
                             </div>
                             
@@ -83,19 +83,24 @@
                                     Region of Interest Tools
                                 </label>
                                 <div class="grid grid-cols-3 gap-2">
-                                    <button class="bg-gray-100 hover:bg-green-100 text-gray-800 hover:text-green-800 py-2 px-3 rounded-md text-sm flex items-center justify-center transition duration-200">
+                                    <button id="rectangleTool" class="roi-tool bg-gray-100 hover:bg-green-100 text-gray-800 hover:text-green-800 py-2 px-3 rounded-md text-sm flex items-center justify-center transition duration-200">
                                         <i data-feather="square" class="w-4 h-4 mr-1"></i>
                                         Rectangle
                                     </button>
-                                    <button class="bg-gray-100 hover:bg-green-100 text-gray-800 hover:text-green-800 py-2 px-3 rounded-md text-sm flex items-center justify-center transition duration-200">
+                                    <button id="polygonTool" class="roi-tool bg-gray-100 hover:bg-green-100 text-gray-800 hover:text-green-800 py-2 px-3 rounded-md text-sm flex items-center justify-center transition duration-200">
                                         <i data-feather="hexagon" class="w-4 h-4 mr-1"></i>
                                         Polygon
                                     </button>
-                                    <button class="bg-gray-100 hover:bg-green-100 text-gray-800 hover:text-green-800 py-2 px-3 rounded-md text-sm flex items-center justify-center transition duration-200">
+                                    <button id="circleTool" class="roi-tool bg-gray-100 hover:bg-green-100 text-gray-800 hover:text-green-800 py-2 px-3 rounded-md text-sm flex items-center justify-center transition duration-200">
                                         <i data-feather="circle" class="w-4 h-4 mr-1"></i>
                                         Circle
                                     </button>
                                 </div>
+                                <!-- Clear ROI Button -->
+                                <button id="clearROI" class="w-full mt-2 bg-red-100 hover:bg-red-200 text-red-800 py-2 px-3 rounded-md text-sm transition duration-200">
+                                    <i data-feather="trash-2" class="w-4 h-4 inline mr-1"></i>
+                                    Clear ROI
+                                </button>
                             </div>
                             
                             <!-- Imagery Parameters -->
@@ -105,7 +110,7 @@
                                     Satellite Data Source
                                 </label>
                                 <select class="w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500">
-                                    <option>Sentinel-2 (10m resolution)</option>
+                                    <option>Google Satellite</option>
                                     <option>Landsat 8 (30m resolution)</option>
                                     <option>Custom Upload</option>
                                 </select>
@@ -145,9 +150,7 @@
                                     AI Segmentation Model
                                 </label>
                                 <select class="w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500">
-                                    <option>DeepLab v3+ (Recommended)</option>
                                     <option>U-Net Architecture</option>
-                                    <option>Mask R-CNN</option>
                                 </select>
                             </div>
                             
@@ -155,23 +158,23 @@
                             <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
                                 <h4 class="text-sm font-medium text-gray-700 mb-2">Processing Status</h4>
                                 <div class="text-sm text-gray-600">
-                                    <div class="flex items-center mb-1">
-                                        <div class="w-2 h-2 bg-gray-300 rounded-full mr-2"></div>
-                                        ROI Selection: Pending
+                                    <div class="flex items-center mb-1 status-item">
+                                        <div class="w-2 h-2 bg-gray-300 rounded-full mr-2 status-dot"></div>
+                                        <span class="status-text">ROI Selection: Pending</span>
                                     </div>
-                                    <div class="flex items-center mb-1">
-                                        <div class="w-2 h-2 bg-gray-300 rounded-full mr-2"></div>
-                                        Imagery Download: Waiting
+                                    <div class="flex items-center mb-1 status-item">
+                                        <div class="w-2 h-2 bg-gray-300 rounded-full mr-2 status-dot"></div>
+                                        <span class="status-text">Imagery Download: Waiting</span>
                                     </div>
-                                    <div class="flex items-center">
-                                        <div class="w-2 h-2 bg-gray-300 rounded-full mr-2"></div>
-                                        AI Segmentation: Ready
+                                    <div class="flex items-center status-item">
+                                        <div class="w-2 h-2 bg-gray-300 rounded-full mr-2 status-dot"></div>
+                                        <span class="status-text">AI Segmentation: Ready</span>
                                     </div>
                                 </div>
                             </div>
                             
                             <!-- Run Button -->
-                            <button class="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white py-3 px-4 rounded-lg font-medium transition duration-300 shadow-md flex items-center justify-center">
+                            <button id="runSegmentation" class="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white py-3 px-4 rounded-lg font-medium transition duration-300 shadow-md flex items-center justify-center">
                                 <i data-feather="play" class="w-5 h-5 mr-2"></i>
                                 Run GEOSPECTRA Segmentation
                             </button>
@@ -202,70 +205,794 @@
     <script src="components/footer.js"></script>
     <script>
         feather.replace();
-        // Initialize Map with BING Maps
+        
+        const DEMO_RESULTS = {
+            original: 'https://via.placeholder.com/800x600/4a90e2/ffffff?text=Original+Satellite+Image',
+            segmented: 'https://via.placeholder.com/800x600/27ae60/ffffff?text=Segmented+Buildings',
+            overlay: 'https://via.placeholder.com/800x600/e74c3c/ffffff?text=Overlay+Result'
+        };
+        
+       
         const map = new maplibregl.Map({
             container: 'map',
-            style: 'https://atlas.microsoft.com/map/tile/png?api-version=2&tilesetId=microsoft.imagery&zoom={z}&x={x}&y={y}&subscription-key=YOUR_BING_KEY',
+            style: {
+                version: 8,
+                sources: {
+                    'google-satellite': {
+                        type: 'raster',
+                        tiles: [
+                            'https://mt0.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
+                            'https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
+                            'https://mt2.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
+                            'https://mt3.google.com/vt/lyrs=s&x={x}&y={y}&z={z}'
+                        ],
+                        tileSize: 256,
+                        attribution: '© Google'
+                    }
+                },
+                layers: [
+                    {
+                        id: 'google-satellite-layer',
+                        type: 'raster',
+                        source: 'google-satellite'
+                    }
+                ]
+            },
             center: [112.6304, -7.9797], // Malang coordinates
             zoom: 12
         });
 
-        // Add drawing controls
-        const draw = new MapboxDraw({
-            displayControlsDefault: false,
-            controls: {
-                polygon: true,
-                trash: true
-            }
-        });
-        map.addControl(draw);
-
         // Add navigation controls
         map.addControl(new maplibregl.NavigationControl());
         map.addControl(new maplibregl.FullscreenControl());
+        map.addControl(new maplibregl.ScaleControl({
+            maxWidth: 100,
+            unit: 'metric'
+        }));
 
-        // Update processing status
+        let isDrawing = false;
+        let startPoint = null;
+        let currentTool = null;
+        let drawingListeners = [];
+        let polygonPoints = [];
+
+       
+        function disableMapInteractions() {
+            map.dragPan.disable();
+            map.scrollZoom.disable();
+            map.boxZoom.disable();
+            map.dragRotate.disable();
+            map.keyboard.disable();
+            map.doubleClickZoom.disable();
+            map.touchZoomRotate.disable();
+        }
+
+        function enableMapInteractions() {
+            map.dragPan.enable();
+            map.scrollZoom.enable();
+            map.boxZoom.enable();
+            map.dragRotate.enable();
+            map.keyboard.enable();
+            map.doubleClickZoom.enable();
+            map.touchZoomRotate.enable();
+        }
+
+        
+        function cleanupDrawing() {
+            if (map.getLayer('roi-layer')) map.removeLayer('roi-layer');
+            if (map.getLayer('roi-fill')) map.removeLayer('roi-fill');
+            if (map.getSource('roi')) map.removeSource('roi');
+            
+            
+            drawingListeners.forEach(listener => {
+                map.off(listener.type, listener.handler);
+            });
+            drawingListeners = [];
+            
+            map.getCanvas().style.cursor = '';
+            isDrawing = false;
+            startPoint = null;
+            polygonPoints = [];
+            enableMapInteractions();
+        }
+
+        // Reset all tool buttons
+        function resetToolButtons() {
+            document.querySelectorAll('.roi-tool').forEach(btn => {
+                btn.classList.remove('bg-green-100', 'text-green-800');
+                btn.classList.add('bg-gray-100', 'text-gray-800');
+            });
+        }
+
+        
+        document.querySelectorAll('.roi-tool').forEach(button => {
+            button.addEventListener('click', function() {
+                const tool = this.id;
+                
+                
+                cleanupDrawing();
+                
+               
+                resetToolButtons();
+                
+                
+                this.classList.remove('bg-gray-100', 'text-gray-800');
+                this.classList.add('bg-green-100', 'text-green-800');
+                
+                currentTool = tool;
+                
+                if (tool === 'rectangleTool') {
+                    enableRectangleDraw();
+                } else if (tool === 'polygonTool') {
+                    enablePolygonDraw();
+                } else if (tool === 'circleTool') {
+                    enableCircleDraw();
+                }
+                
+                console.log(`${tool} activated`);
+            });
+        });
+
+        // Clear ROI button
+        document.getElementById('clearROI').addEventListener('click', function() {
+            cleanupDrawing();
+            resetToolButtons();
+            
+            // Reset processing status
+            const statusItems = document.querySelectorAll('.status-item');
+            statusItems.forEach((item, i) => {
+                const dot = item.querySelector('.status-dot');
+                const text = item.querySelector('.status-text');
+                
+                dot.classList.remove('bg-green-500');
+                dot.classList.add('bg-gray-300');
+                
+                if (i === 0) {
+                    text.textContent = 'ROI Selection: Pending';
+                } else if (i === 1) {
+                    text.textContent = 'Imagery Download: Waiting';
+                } else if (i === 2) {
+                    text.textContent = 'AI Segmentation: Ready';
+                }
+            });
+            
+            console.log('ROI cleared');
+        });
+
+        // Rectangle Drawing
+        function enableRectangleDraw() {
+            disableMapInteractions();
+            map.getCanvas().style.cursor = 'crosshair';
+            
+            const mouseDownHandler = (e) => {
+                e.preventDefault();
+                if (!isDrawing) {
+                    isDrawing = true;
+                    startPoint = [e.lngLat.lng, e.lngLat.lat];
+                }
+            };
+            
+            const mouseMoveHandler = (e) => {
+                if (isDrawing && startPoint) {
+                    const currentPoint = [e.lngLat.lng, e.lngLat.lat];
+                    drawRectangle(startPoint, currentPoint);
+                }
+            };
+            
+            const mouseUpHandler = (e) => {
+                e.preventDefault();
+                if (isDrawing) {
+                    isDrawing = false;
+                    map.getCanvas().style.cursor = '';
+                    updateProcessingStatus(0, 'completed');
+                    enableMapInteractions();
+                    resetToolButtons();
+                    console.log('Rectangle drawn successfully');
+                }
+            };
+            
+            map.on('mousedown', mouseDownHandler);
+            map.on('mousemove', mouseMoveHandler);
+            map.on('mouseup', mouseUpHandler);
+            
+            drawingListeners.push(
+                { type: 'mousedown', handler: mouseDownHandler },
+                { type: 'mousemove', handler: mouseMoveHandler },
+                { type: 'mouseup', handler: mouseUpHandler }
+            );
+        }
+
+        function drawRectangle(start, end) {
+            const coordinates = [
+                [
+                    [start[0], start[1]],
+                    [end[0], start[1]],
+                    [end[0], end[1]],
+                    [start[0], end[1]],
+                    [start[0], start[1]]
+                ]
+            ];
+
+            updateROI(coordinates);
+        }
+
+        // Polygon Drawing (click to add points, double-click to finish)
+        function enablePolygonDraw() {
+            disableMapInteractions();
+            map.getCanvas().style.cursor = 'crosshair';
+            polygonPoints = [];
+            
+            const clickHandler = (e) => {
+                e.preventDefault();
+                polygonPoints.push([e.lngLat.lng, e.lngLat.lat]);
+                
+                if (polygonPoints.length >= 3) {
+                    // Close the polygon for preview
+                    const closedPolygon = [...polygonPoints, polygonPoints[0]];
+                    updateROI([closedPolygon]);
+                }
+                
+                console.log(`Polygon point added: ${polygonPoints.length} points`);
+            };
+            
+            const dblClickHandler = (e) => {
+                e.preventDefault();
+                if (polygonPoints.length >= 3) {
+                    const closedPolygon = [...polygonPoints, polygonPoints[0]];
+                    updateROI([closedPolygon]);
+                    updateProcessingStatus(0, 'completed');
+                    enableMapInteractions();
+                    resetToolButtons();
+                    map.getCanvas().style.cursor = '';
+                    console.log('Polygon drawn successfully');
+                }
+            };
+            
+            map.on('click', clickHandler);
+            map.on('dblclick', dblClickHandler);
+            
+            drawingListeners.push(
+                { type: 'click', handler: clickHandler },
+                { type: 'dblclick', handler: dblClickHandler }
+            );
+        }
+
+        // Circle Drawing
+        function enableCircleDraw() {
+            disableMapInteractions();
+            map.getCanvas().style.cursor = 'crosshair';
+            
+            const mouseDownHandler = (e) => {
+                e.preventDefault();
+                if (!isDrawing) {
+                    isDrawing = true;
+                    startPoint = [e.lngLat.lng, e.lngLat.lat];
+                }
+            };
+            
+            const mouseMoveHandler = (e) => {
+                if (isDrawing && startPoint) {
+                    const currentPoint = [e.lngLat.lng, e.lngLat.lat];
+                    drawCircle(startPoint, currentPoint);
+                }
+            };
+            
+            const mouseUpHandler = (e) => {
+                e.preventDefault();
+                if (isDrawing) {
+                    isDrawing = false;
+                    map.getCanvas().style.cursor = '';
+                    updateProcessingStatus(0, 'completed');
+                    enableMapInteractions();
+                    resetToolButtons();
+                    console.log('Circle drawn successfully');
+                }
+            };
+            
+            map.on('mousedown', mouseDownHandler);
+            map.on('mousemove', mouseMoveHandler);
+            map.on('mouseup', mouseUpHandler);
+            
+            drawingListeners.push(
+                { type: 'mousedown', handler: mouseDownHandler },
+                { type: 'mousemove', handler: mouseMoveHandler },
+                { type: 'mouseup', handler: mouseUpHandler }
+            );
+        }
+
+        function drawCircle(center, edge) {
+            const radius = Math.sqrt(
+                Math.pow(edge[0] - center[0], 2) + Math.pow(edge[1] - center[1], 2)
+            );
+            
+            const points = 64;
+            const coordinates = [];
+            
+            for (let i = 0; i <= points; i++) {
+                const angle = (i / points) * 2 * Math.PI;
+                const x = center[0] + radius * Math.cos(angle);
+                const y = center[1] + radius * Math.sin(angle);
+                coordinates.push([x, y]);
+            }
+            
+            updateROI([coordinates]);
+        }
+
+        
+        function updateROI(coordinates) {
+            if (map.getSource('roi')) {
+                map.getSource('roi').setData({
+                    type: 'Feature',
+                    geometry: {
+                        type: 'Polygon',
+                        coordinates: coordinates
+                    }
+                });
+            } else {
+                map.addSource('roi', {
+                    type: 'geojson',
+                    data: {
+                        type: 'Feature',
+                        geometry: {
+                            type: 'Polygon',
+                            coordinates: coordinates
+                        }
+                    }
+                });
+
+                map.addLayer({
+                    id: 'roi-fill',
+                    type: 'fill',
+                    source: 'roi',
+                    paint: {
+                        'fill-color': '#27ae60',
+                        'fill-opacity': 0.2
+                    }
+                });
+
+                map.addLayer({
+                    id: 'roi-layer',
+                    type: 'line',
+                    source: 'roi',
+                    paint: {
+                        'line-color': '#27ae60',
+                        'line-width': 3,
+                        'line-dasharray': [5, 5]
+                    }
+                });
+            }
+        }
+
+        
+        document.getElementById('basemapSelect').addEventListener('change', function(e) {
+            const selectedBasemap = e.target.value;
+            
+            
+            let roiData = null;
+            if (map.getSource('roi')) {
+                roiData = map.getSource('roi')._data;
+            }
+            
+            if (selectedBasemap === 'satellite') {
+                map.setStyle({
+                    version: 8,
+                    sources: {
+                        'google-satellite': {
+                            type: 'raster',
+                            tiles: [
+                                'https://mt0.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
+                                'https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
+                                'https://mt2.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
+                                'https://mt3.google.com/vt/lyrs=s&x={x}&y={y}&z={z}'
+                            ],
+                            tileSize: 256,
+                            attribution: '© Google'
+                        }
+                    },
+                    layers: [
+                        {
+                            id: 'google-satellite-layer',
+                            type: 'raster',
+                            source: 'google-satellite'
+                        }
+                    ]
+                });
+            } else if (selectedBasemap === 'osm') {
+                map.setStyle({
+                    version: 8,
+                    sources: {
+                        'osm': {
+                            type: 'raster',
+                            tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
+                            tileSize: 256,
+                            attribution: '© OpenStreetMap contributors'
+                        }
+                    },
+                    layers: [
+                        {
+                            id: 'osm-layer',
+                            type: 'raster',
+                            source: 'osm'
+                        }
+                    ]
+                });
+            } else if (selectedBasemap === 'terrain') {
+                map.setStyle({
+                    version: 8,
+                    sources: {
+                        'terrain': {
+                            type: 'raster',
+                            tiles: ['https://mt0.google.com/vt/lyrs=p&x={x}&y={y}&z={z}'],
+                            tileSize: 256,
+                            attribution: '© Google'
+                        }
+                    },
+                    layers: [
+                        {
+                            id: 'terrain-layer',
+                            type: 'raster',
+                            source: 'terrain'
+                        }
+                    ]
+                });
+            }
+            
+            
+            if (roiData) {
+                map.once('styledata', () => {
+                    map.addSource('roi', {
+                        type: 'geojson',
+                        data: roiData
+                    });
+
+                    map.addLayer({
+                        id: 'roi-fill',
+                        type: 'fill',
+                        source: 'roi',
+                        paint: {
+                            'fill-color': '#27ae60',
+                            'fill-opacity': 0.2
+                        }
+                    });
+
+                    map.addLayer({
+                        id: 'roi-layer',
+                        type: 'line',
+                        source: 'roi',
+                        paint: {
+                            'line-color': '#27ae60',
+                            'line-width': 3,
+                            'line-dasharray': [5, 5]
+                        }
+                    });
+                });
+            }
+        });
+
+        
         function updateProcessingStatus(step, status) {
-            const steps = document.querySelectorAll('.processing-step');
-            steps.forEach((el, i) => {
-                if (i < step) {
-                    el.querySelector('.status-dot').style.backgroundColor = '#27ae60';
-                    el.textContent = el.textContent.replace('Pending', 'Completed')
-                                                  .replace('Waiting', 'Completed');
-                } else if (i === step) {
-                    el.querySelector('.status-dot').style.backgroundColor = '#f39c12';
-                    el.textContent = el.textContent.replace('Pending', 'Processing')
-                                                  .replace('Waiting', 'Processing');
+            const statusItems = document.querySelectorAll('.status-item');
+            
+            statusItems.forEach((item, i) => {
+                const dot = item.querySelector('.status-dot');
+                const text = item.querySelector('.status-text');
+                
+                if (i <= step) {
+                    dot.classList.remove('bg-gray-300');
+                    dot.classList.add('bg-green-500');
+                    
+                    if (i === 0) {
+                        text.textContent = 'ROI Selection: Completed';
+                    } else if (i === 1) {
+                        text.textContent = 'Imagery Download: Ready';
+                    } else if (i === 2) {
+                        text.textContent = 'AI Segmentation: Ready';
+                    }
                 }
             });
         }
 
-        // Run segmentation with U-Net model
-        document.querySelector('button[class*="Run GEOSPECTRA"]').addEventListener('click', function() {
-            const roi = draw.getAll();
-            if (!roi.features.length) {
-                alert('Please draw a region of interest first!');
-                return;
-            }
-
-            // Update status
-            updateProcessingStatus(0, 'processing');
+        
+        window.openImageModal = function(src, title) {
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-[60] p-4';
+            modal.innerHTML = `
+                <div class="relative max-w-5xl max-h-full">
+                    <button class="absolute top-4 right-4 text-white hover:text-gray-300 z-10 bg-black bg-opacity-50 rounded-full p-2" onclick="this.parentElement.parentElement.remove()">
+                        <i data-feather="x" class="w-6 h-6"></i>
+                    </button>
+                    <img src="${src}" alt="${title}" class="max-w-full max-h-full object-contain rounded-lg shadow-2xl">
+                    <div class="absolute bottom-4 left-4 bg-black bg-opacity-75 text-white p-3 rounded-lg">
+                        <p class="font-medium">${title}</p>
+                    </div>
+                </div>
+            `;
             
-            // Simulate processing steps
+            document.body.appendChild(modal);
+            feather.replace();
+            
+            
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.remove();
+                }
+            });
+        };
+
+        
+document.getElementById('runSegmentation').addEventListener('click', function() {
+    console.log('Run segmentation clicked');
+    
+    // Disable the button during processing
+    const runButton = this;
+    const originalButtonContent = runButton.innerHTML;
+    runButton.disabled = true;
+    runButton.innerHTML = `
+        <div class="flex items-center justify-center">
+            <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+            Processing...
+        </div>
+    `;
+    
+    // Create processing popup
+    const processingPopup = document.createElement('div');
+    processingPopup.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4';
+    processingPopup.innerHTML = `
+        <div class="bg-white rounded-xl max-w-md w-full p-8 text-center">
+            <div class="mb-6">
+                <div class="mx-auto w-16 h-16 bg-gradient-to-r from-green-500 to-green-600 rounded-full flex items-center justify-center mb-4">
+                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">Processing Your Analysis</h3>
+                <p class="text-gray-600 mb-4">GEOSPECTRA AI is analyzing your region of interest...</p>
+            </div>
+            
+            <!-- Processing Steps -->
+            <div class="space-y-3 mb-6">
+                <div class="processing-step flex items-center text-left" data-step="0">
+                    <div class="w-4 h-4 rounded-full bg-gray-300 mr-3 step-indicator"></div>
+                    <span class="text-sm text-gray-600 step-text">Downloading satellite imagery...</span>
+                </div>
+                <div class="processing-step flex items-center text-left" data-step="1">
+                    <div class="w-4 h-4 rounded-full bg-gray-300 mr-3 step-indicator"></div>
+                    <span class="text-sm text-gray-600 step-text">Preprocessing image data...</span>
+                </div>
+                <div class="processing-step flex items-center text-left" data-step="2">
+                    <div class="w-4 h-4 rounded-full bg-gray-300 mr-3 step-indicator"></div>
+                    <span class="text-sm text-gray-600 step-text">Running AI segmentation model...</span>
+                </div>
+                <div class="processing-step flex items-center text-left" data-step="3">
+                    <div class="w-4 h-4 rounded-full bg-gray-300 mr-3 step-indicator"></div>
+                    <span class="text-sm text-gray-600 step-text">Generating results...</span>
+                </div>
+            </div>
+            
+            <!-- Progress Bar -->
+            <div class="w-full bg-gray-200 rounded-full h-2 mb-4">
+                <div class="bg-gradient-to-r from-green-500 to-green-600 h-2 rounded-full transition-all duration-1000 ease-out" style="width: 0%" id="progressBar"></div>
+            </div>
+            
+            <p class="text-xs text-gray-500">This may take a few moments depending on the region size...</p>
+        </div>
+    `;
+    
+    document.body.appendChild(processingPopup);
+    
+    
+    const steps = [
+        { delay: 1000, message: "Downloading satellite imagery...", progress: 25 },
+        { delay: 2000, message: "Preprocessing image data...", progress: 50 },
+        { delay: 3500, message: "Running AI segmentation model...", progress: 75 },
+        { delay: 2000, message: "Generating results...", progress: 100 }
+    ];
+    
+    let currentStep = 0;
+    const progressBar = document.getElementById('progressBar');
+    
+    function processStep() {
+        if (currentStep < steps.length) {
+            const step = steps[currentStep];
+            
             setTimeout(() => {
-                updateProcessingStatus(1, 'processing');
                 
-                setTimeout(() => {
-                    updateProcessingStatus(2, 'processing');
+                progressBar.style.width = step.progress + '%';
+                
+                
+                const stepElement = document.querySelector(`[data-step="${currentStep}"]`);
+                if (stepElement) {
+                    const indicator = stepElement.querySelector('.step-indicator');
+                    const text = stepElement.querySelector('.step-text');
                     
-                    // Show success and redirect
-                    setTimeout(() => {
-                        alert('Segmentation completed successfully using U-Net model!');
-                        window.location.href = 'result1.html'; // Will show local TIFF file
-                    }, 1000);
-                }, 1500);
+                    indicator.classList.remove('bg-gray-300');
+                    indicator.classList.add('bg-green-500');
+                    text.classList.add('text-green-600', 'font-medium');
+                    
+                    
+                    indicator.innerHTML = '<i data-feather="check" class="w-2 h-2 text-white"></i>';
+                    feather.replace();
+                }
+                
+                currentStep++;
+                processStep();
+            }, step.delay);
+        } else {
+            
+            setTimeout(() => {
+                processingPopup.remove();
+                showResultsPopup();
+                
+                
+                runButton.disabled = false;
+                runButton.innerHTML = originalButtonContent;
+                feather.replace();
             }, 1000);
+        }
+    }
+    
+    // Start processing simulation
+    processStep();
+    
+    function showResultsPopup() {
+        // Create and show popup with demo results
+        const popup = document.createElement('div');
+        popup.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4';
+        popup.innerHTML = `
+            <div class="bg-white rounded-xl max-w-6xl w-full max-h-[90vh] overflow-auto">
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-800 flex items-center">
+                                <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center mr-3">
+                                    <i data-feather="check" class="w-5 h-5 text-white"></i>
+                                </div>
+                                Segmentation Complete!
+                            </h3>
+                            <p class="text-gray-600 mt-1">Your analysis has been processed successfully</p>
+                        </div>
+                        <button class="close-popup text-gray-500 hover:text-gray-700">
+                            <i data-feather="x" class="w-6 h-6"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Demo Results Gallery -->
+                    <div class="mb-6">
+                        <h4 class="font-medium text-gray-700 mb-4 flex items-center">
+                            <i data-feather="image" class="w-5 h-5 mr-2 text-green-600"></i>
+                            Segmentation Results Gallery
+                        </h4>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <!-- Original Image -->
+                            <div class="relative group cursor-pointer" onclick="openImageModal('images/ROI Imagery.jpg', 'Original Satellite Image')">
+                                <img src="images/ROI Imagery.jpg" alt="Original Image" class="w-full h-48 object-cover rounded-lg border border-gray-200 hover:border-green-400 transition duration-200">
+                                <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition duration-200 rounded-lg flex items-center justify-center">
+                                    <i data-feather="zoom-in" class="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition duration-200"></i>
+                                </div>
+                                <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-3 rounded-b-lg">
+                                    <p class="text-white font-medium">Original Image</p>
+                                    <p class="text-white text-sm opacity-75">Satellite imagery input</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Segmented Image -->
+                            <div class="relative group cursor-pointer" onclick="openImageModal('images/Segmented Buildings.jpg', 'AI Segmented Buildings')">
+                                <img src="images/Segmented Buildings.jpg" alt="Segmented Buildings" class="w-full h-48 object-cover rounded-lg border border-gray-200 hover:border-green-400 transition duration-200">
+                                <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition duration-200 rounded-lg flex items-center justify-center">
+                                    <i data-feather="zoom-in" class="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition duration-200"></i>
+                                </div>
+                                <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-3 rounded-b-lg">
+                                    <p class="text-white font-medium">Segmented Buildings</p>
+                                    <p class="text-white text-sm opacity-75">AI-detected structures</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Overlay Result -->
+                            <div class="relative group cursor-pointer" onclick="openImageModal('images/Overlay Segmentation.jpg', 'Overlay Result')">
+                                <img src="images/Overlay Segmentation.jpg" alt="Overlay Result" class="w-full h-48 object-cover rounded-lg border border-gray-200 hover:border-green-400 transition duration-200">
+                                <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition duration-200 rounded-lg flex items-center justify-center">
+                                    <i data-feather="zoom-in" class="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition duration-200"></i>
+                                </div>
+                                <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-3 rounded-b-lg">
+                                    <p class="text-white font-medium">Overlay Result</p>
+                                    <p class="text-white text-sm opacity-75">Combined visualization</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Statistics Section -->
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <h4 class="font-medium text-gray-700 mb-3 flex items-center">
+                                <i data-feather="bar-chart-2" class="w-5 h-5 mr-2 text-blue-600"></i>
+                                Analysis Statistics
+                            </h4>
+                            <div class="bg-gray-50 rounded-lg p-4">
+                                <div class="space-y-3">
+                                    <div class="flex justify-between">
+                                        <span class="text-sm text-gray-600">Buildings Detected:</span>
+                                        <span class="text-lg font-semibold text-green-600">3.513 buildings</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-sm text-gray-600">Total Area:</span>
+                                        <span class="text-lg font-semibold text-green-600">0,186 km²</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-sm text-gray-600">Average Building Size:</span>
+                                        <span class="text-lg font-semibold text-green-600">53,1 m²</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-sm text-gray-600">Model Accuracy:</span>
+                                        <span class="text-lg font-semibold text-green-600">94.2%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-medium text-gray-700 mb-3 flex items-center">
+                                <i data-feather="activity" class="w-5 h-5 mr-2 text-purple-600"></i>
+                                Processing Details
+                            </h4>
+                            <div class="bg-gray-50 rounded-lg p-4">
+                                <div class="space-y-3">
+                                    <div class="flex justify-between">
+                                        <span class="text-sm text-gray-600">Processing Time:</span>
+                                        <span class="text-lg font-semibold text-blue-600">8.5 seconds</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-sm text-gray-600">ROI Coverage:</span>
+                                        <span class="text-lg font-semibold text-blue-600">100%</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-sm text-gray-600">Resolution:</span>
+                                        <span class="text-lg font-semibold text-blue-600">0.5m/pixel</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-sm text-gray-600">Cloud Coverage:</span>
+                                        <span class="text-lg font-semibold text-blue-600">< 5%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="flex justify-end gap-3">
+                        <button class="close-popup px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition duration-200">
+                            Close
+                        </button>
+                        <button class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200 flex items-center">
+                            <i data-feather="download" class="w-4 h-4 mr-2"></i>
+                            Download Results
+                        </button>
+                        <a href="tool2-classification.html" class="px-6 py-2 bg-gradient-to-r from-green-600 to-orange-600 text-white rounded-lg hover:from-green-700 hover:to-orange-700 transition duration-200 flex items-center">
+                            <i data-feather="arrow-right" class="w-4 h-4 mr-2"></i>
+                            Continue to Classification
+                        </a>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(popup);
+        
+        // Add close functionality
+        popup.querySelectorAll('.close-popup').forEach(btn => {
+            btn.addEventListener('click', () => {
+                popup.remove();
+            });
         });
-</script>
+        
+        // Close on backdrop click
+        popup.addEventListener('click', (e) => {
+            if (e.target === popup) {
+                popup.remove();
+            }
+        });
+        
+        // Re-render feather icons
+        feather.replace();
+        }
+        });
+    </script>
 </body>
 </html>
