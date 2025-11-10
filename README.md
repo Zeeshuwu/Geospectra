@@ -39,26 +39,28 @@
 - **Data Sources**: Google Satellite, OpenStreetMap, Landsat 8
 
 ## 📁 Project Structure
-
-```
+...
 GEOSPECTRA/
-├── components/           # Reusable UI components
-│   ├── navbar.js        # Navigation component
-│   └── footer.js        # Footer component
-├── images/              # Static images and assets
-├── 3d-viewer.html       # 3D solar analysis interface
+├── components/          # Reusable UI components
+├── images/              # Images and assets
+├── .gitattributes       # Git LFS configuration
+├── 3d-viewer.html       # 3D viewer interface
+├── 3d-viewer2.html      # 3D viewer interface (v2)
+├── 3d-viewer3.html      # 3D viewer interface (v3)
+├── LICENSE              # Project license file
+├── README.md            # Project documentation
 ├── about.html           # About page
-├── index.html           # Landing page
+├── bandung_buildings_3d_fixed.json   # 3D building data (Bandung)
+├── index.html           # Main landing page
+├── malang_buildings_3d_fixed.json    # 3D building data (Malang)
 ├── segmentation.html    # Legacy segmentation page
+├── semarang_reproject_3d_fixed.json  # 3D building data (Semarang)
 ├── style.css            # Custom styles
-├── team.html            # Team information
-├── tool1-segmentation.html    # Main segmentation tool
-├── tool2-classification.html  # Building classification tool
-├── tools.html           # Tools overview page
-├── malang_buildings_3d_fixed.json  # 3D building data
-├── LICENSE              # MIT License
-└── README.md           # Project documentation
-```
+├── team.html            # Team information page
+├── tool1-segmentation.html   # Main segmentation tool
+├── tool2-classification.html # Building classification tool
+└── tools.html           # Tools overview page
+...
 
 ## 🚀 Quick Start
 
