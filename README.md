@@ -39,7 +39,7 @@
 - **Data Sources**: Google Satellite, OpenStreetMap, Landsat 8
 
 ## 📁 Project Structure
-...
+'''
 GEOSPECTRA/
 ├── components/          # Reusable UI components
 ├── images/              # Images and assets
@@ -60,7 +60,7 @@ GEOSPECTRA/
 ├── tool1-segmentation.html   # Main segmentation tool
 ├── tool2-classification.html # Building classification tool
 └── tools.html           # Tools overview page
-...
+'''
 
 ## 🚀 Quick Start
 
