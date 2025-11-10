@@ -1,0 +1,1297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GEOSPECTRA: Pioneering The Next Generation Of Spatial Intelligence : 3d Viewer Semarang City </title>
+    <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
+    <link href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/proj4@2.9.0/dist/proj4.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+        
+        .map-overlay {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            max-width: 400px;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+        
+        .header-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #1a365d;
+            margin-bottom: 15px;
+            text-align: center;
+            background: linear-gradient(135deg, #f39c12 0%, #27ae60 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .controls {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+        
+        .control-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            color: #2d3748;
+        }
+        
+        select, input[type="range"] {
+            width: 100%;
+            margin-bottom: 8px;
+            padding: 8px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+        
+        .stats {
+            font-size: 13px;
+            color: #4a5568;
+        }
+        
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            z-index: 2000;
+            text-align: center;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .legend {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            font-size: 13px;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .legend-color {
+            width: 24px;
+            height: 18px;
+            margin-right: 10px;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+        }
+        
+        
+        .pv-panel {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            min-width: 500px;
+            transition: all 0.3s ease;
+        }
+        
+        .pv-panel.minimized {
+            min-width: 200px;
+        }
+        
+        .pv-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: linear-gradient(135deg, #f39c12 0%, #27ae60 100%);
+            border-radius: 12px 12px 0 0;
+            color: white;
+        }
+        
+        .pv-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin: 0;
+        }
+        
+        .minimize-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .minimize-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .pv-body {
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .pv-panel.minimized .pv-body {
+            display: none;
+        }
+        
+        .pv-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .pv-tab {
+            padding: 12px 20px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 14px;
+            font-weight: 600;
+            color: #718096;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .pv-tab.active {
+            color: #27ae60;
+            border-bottom-color: #27ae60;
+        }
+        
+        .pv-tab:hover {
+            color: #27ae60;
+        }
+        
+        .pv-content {
+            display: none;
+        }
+        
+        .pv-content.active {
+            display: block;
+        }
+        
+        .pv-chart-container {
+            height: 300px;
+            margin-bottom: 15px;
+        }
+        
+        .pv-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .pv-stat-card {
+            background: linear-gradient(135deg, #f39c12 0%, #27ae60 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .pv-stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .pv-stat-label {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        
+        /* Simplified Building Popup Styles */
+        .building-popup {
+            max-width: 380px;
+            font-family: 'Segoe UI', sans-serif;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .building-popup-header {
+            background: linear-gradient(135deg, #f39c12 0%, #27ae60 100%);
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+        }
+        
+        .building-popup-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 0;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+        
+        .building-popup-subtitle {
+            font-size: 13px;
+            opacity: 0.9;
+            margin-top: 3px;
+        }
+        
+        .building-popup-content {
+            padding: 20px;
+            background: white;
+        }
+        
+        .building-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+        
+        .building-stat-card {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid #27ae60;
+            text-align: center;
+        }
+        
+        .building-stat-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2d3748;
+            margin-bottom: 2px;
+        }
+        
+        .building-stat-label {
+            font-size: 11px;
+            color: #6c757d;
+            font-weight: 600;
+        }
+        
+        .building-chart-container {
+            height: 160px;
+            margin: 15px 0;
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 10px;
+        }
+        
+        .building-efficiency-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-top: 10px;
+        }
+        
+        .efficiency-excellent { background: #d4edda; color: #155724; }
+        .efficiency-good { background: #fff3cd; color: #856404; }
+        .efficiency-average { background: #f8d7da; color: #721c24; }
+        
+        .building-quick-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, #f39c12 0%, #27ae60 100%);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        
+        .quick-stat {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .quick-stat-value {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 2px;
+        }
+        
+        .quick-stat-label {
+            font-size: 10px;
+            opacity: 0.9;
+        }
+        
+        /* Updated color schemes for green/orange theme */
+        .building-type-residential { background-color: #27ae60; }
+        .building-type-office { background-color: #f39c12; }
+        .building-type-industrial { background-color: #e67e22; }
+        .building-type-default { background-color: #95a5a6; }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    
+    <div class="loading" id="loading">
+        <h3>🌍 Loading GEOSPECTRA...</h3>
+        <p>Processing spatial intelligence data...</p>
+    </div>
+    
+    <div class="map-overlay">
+        <div class="header-title">GEOSPECTRA: Pioneering The Next Generation Of Spatial Intelligence</div>
+        <div style="background: #e8f5e8; border: 1px solid #27ae60; border-radius: 6px; padding: 10px; margin-bottom: 15px; font-size: 12px; color: #1e5631;">
+            <strong>Semarang 3d Viewer 📍 Coordinate System:</strong> <span id="utm-zone">UTM Zone 49S (EPSG:32749)</span>
+        </div>
+        <div class="stats">
+            <div>🏢 Buildings: <span id="building-count">Loading...</span></div>
+            <div>⚡ Total Solar Capacity: <span id="solar-capacity">Loading...</span></div>
+            <div>🏠 Roof Types: <span id="roof-types">Loading...</span></div>
+        </div>
+    </div>
+    
+    <!-- RESTORED: Photovoltaic Potential Panel with Minimize Feature -->
+    <div class="pv-panel" id="pv-panel">
+        <div class="pv-header">
+            <h3 class="pv-title">📊 Solar Analytics Dashboard</h3>
+            <button class="minimize-btn" onclick="togglePVPanel()">
+                <span id="minimize-icon">➖</span>
+            </button>
+        </div>
+        
+        <div class="pv-body">
+            <div class="pv-tabs">
+                <button class="pv-tab active" onclick="switchPVTab('capacity')">⚡ Solar Capacity</button>
+                <button class="pv-tab" onclick="switchPVTab('area')">📐 PV Area</button>
+                <button class="pv-tab" onclick="switchPVTab('energy')">🔋 Energy Stats</button>
+            </div>
+            
+            <div class="pv-content active" id="pv-capacity">
+                <div class="pv-chart-container">
+                    <canvas id="capacityChart"></canvas>
+                </div>
+                <div class="pv-stats-grid">
+                    <div class="pv-stat-card">
+                        <div class="pv-stat-value" id="total-capacity">0</div>
+                        <div class="pv-stat-label">Total Capacity (kWp)</div>
+                    </div>
+                    <div class="pv-stat-card">
+                        <div class="pv-stat-value" id="avg-capacity">0</div>
+                        <div class="pv-stat-label">Avg per Building (kWp)</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="pv-content" id="pv-area">
+                <div class="pv-chart-container">
+                    <canvas id="areaChart"></canvas>
+                </div>
+                <div class="pv-stats-grid">
+                    <div class="pv-stat-card">
+                        <div class="pv-stat-value" id="total-area">0</div>
+                        <div class="pv-stat-label">Total PV Area (m²)</div>
+                    </div>
+                    <div class="pv-stat-card">
+                        <div class="pv-stat-value" id="avg-area">0</div>
+                        <div class="pv-stat-label">Avg per Building (m²)</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="pv-content" id="pv-energy">
+                <div class="pv-chart-container">
+                    <canvas id="energyChart"></canvas>
+                </div>
+                <div class="pv-stats-grid">
+                    <div class="pv-stat-card">
+                        <div class="pv-stat-value" id="annual-energy">0</div>
+                        <div class="pv-stat-label">Annual Energy (MWh)</div>
+                    </div>
+                    <div class="pv-stat-card">
+                        <div class="pv-stat-value" id="co2-savings">0</div>
+                        <div class="pv-stat-label">CO₂ Savings (tons/year)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="controls">
+        <div class="control-group">
+            <label>🎨 Color Buildings By:</label>
+            <select id="color-mode">
+                <option value="building-type">Building Type</option>
+                <option value="roof-shape">Roof Shape</option>
+                <option value="roof-material">Roof Material</option>
+                <option value="building-height">Building Height</option>
+                <option value="solar-capacity">Solar Capacity</option>
+                <option value="roof-slope">Roof Slope</option>
+            </select>
+        </div>
+        
+        <div class="control-group">
+            <label>📏 Building Height Scale:</label>
+            <input type="range" id="height-scale" min="0.5" max="3" step="0.1" value="1">
+            <span id="height-scale-value">1.0x</span>
+        </div>
+        
+        <div class="control-group">
+            <label>👁️ Building Opacity:</label>
+            <input type="range" id="opacity" min="0.3" max="1" step="0.1" value="0.8">
+            <span id="opacity-value">0.8</span>
+        </div>
+    </div>
+    
+    <div class="legend" id="legend">
+        <h4>🗺️ Legend</h4>
+        <div id="legend-content"></div>
+    </div>
+
+    <script>
+        // Configuration
+        const CITYJSON_URL = 'semarang_reproject_3d_fixed.json';
+        
+        // UTM Zone 49S coordinate transformation setup
+        proj4.defs("EPSG:32749", "+proj=utm +zone=49 +south +datum=WGS84 +units=m +no_defs");
+        proj4.defs("EPSG:4326", "+proj=longlat +datum=WGS84 +no_defs");
+        
+        // Function to transform UTM coordinates to WGS84
+        function transformUTMToWGS84(utmCoords) {
+            try {
+                const wgs84Coords = proj4("EPSG:32749", "EPSG:4326", [utmCoords[0], utmCoords[1]]);
+                return [wgs84Coords[0], wgs84Coords[1], utmCoords[2] || 0];
+            } catch (error) {
+                console.warn("Coordinate transformation error:", error);
+                return utmCoords;
+            }
+        }
+        
+        // Updated color schemes - ONLY ORIGINAL 5 ROOF MATERIALS WITH REALISTIC COLORS
+        const colorSchemes = {
+            'building-type': {
+                'Residential': '#27ae60',
+                'Office Building': '#f39c12',
+                'Industrial': '#e67e22',
+                'default': '#95a5a6'
+            },
+            'roof-shape': {
+                'flat': '#2ecc71',
+                'gable': '#27ae60',
+                'hip': '#f39c12',
+                'shed': '#e67e22',
+                'default': '#95a5a6'
+            },
+            'roof-material': {
+                // ONLY THE ORIGINAL 5 CLASSES WITH REALISTIC MATERIAL COLORS
+                'Concrete Glazed Tile': '#8B4513',        // Brown (clay-like glazed tiles)
+                'Concrete Aluminum Tile': '#C0C0C0',      // Silver/Light Gray (aluminum)
+                'Clay Tile Shingle': '#CD853F',          // Sandy Brown (traditional clay tiles)
+                'Asbestos Sheet': '#696969',             // Dim Gray (weathered asbestos)
+                'Metal Sheet': '#708090',                // Slate Gray (galvanized metal)
+                'default': '#95a5a6'                     // Default gray
+            }
+        };
+        
+        let map;
+        let buildingsData = null;
+        let currentColorMode = 'building-type';
+        let heightScale = 1.0;
+        let opacity = 0.8;
+        let buildingPopupChart = null;
+        let charts = {};
+        let isPVPanelMinimized = false;
+        
+        // RESTORED: Toggle PV Panel minimize/maximize
+        function togglePVPanel() {
+            const panel = document.getElementById('pv-panel');
+            const icon = document.getElementById('minimize-icon');
+            
+            isPVPanelMinimized = !isPVPanelMinimized;
+            
+            if (isPVPanelMinimized) {
+                panel.classList.add('minimized');
+                icon.textContent = '➕';
+            } else {
+                panel.classList.remove('minimized');
+                icon.textContent = '➖';
+            }
+        }
+        
+        // RESTORED: Switch PV tabs
+        function switchPVTab(tabName) {
+            // Remove active class from all tabs and contents
+            document.querySelectorAll('.pv-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.pv-content').forEach(content => content.classList.remove('active'));
+            
+            // Add active class to selected tab and content
+            document.querySelector(`[onclick="switchPVTab('${tabName}')"]`).classList.add('active');
+            document.getElementById(`pv-${tabName}`).classList.add('active');
+        }
+        
+        // Calculate building efficiency rating
+        function calculateEfficiencyRating(properties) {
+            const solarCapacity = properties['Solar PV Capacity High'] || 0;
+            const floorArea = properties['Footprint Area'] || 1;
+            const efficiency = solarCapacity / floorArea;
+            
+            if (efficiency > 0.15) return { rating: 'Excellent', class: 'efficiency-excellent' };
+            if (efficiency > 0.08) return { rating: 'Good', class: 'efficiency-good' };
+            return { rating: 'Average', class: 'efficiency-average' };
+        }
+        
+        // Create simplified building popup with single chart
+        function createBuildingPopup(properties) {
+            const efficiency = calculateEfficiencyRating(properties);
+            
+            const solarCapacityLow = properties['Solar PV Capacity Low'] || 0;
+            const solarCapacityHigh = properties['Solar PV Capacity High'] || 0;
+            const pvArea = properties['Suitable PV Area'] || 0;
+            const floorArea = properties['Footprint Area'] || 0;
+            const roofSlope = properties['Roof Slope'] || 0;
+            const buildingHeight = properties['Building Height'] || properties.height || 0;
+            
+            const annualEnergy = solarCapacityHigh * 1500;
+            const monthlySavings = (annualEnergy * 0.12) / 12;
+            
+            return `
+                <div class="building-popup">
+                    <div class="building-popup-header">
+                        <h3 class="building-popup-title">🏢 Building ${properties.id}</h3>
+                        <div class="building-popup-subtitle">
+                            ${properties['Building Type'] || 'Unknown Type'}
+                        </div>
+                        <span class="building-efficiency-badge ${efficiency.class}">${efficiency.rating} Efficiency</span>
+                    </div>
+                    
+                    <div class="building-popup-content">
+                        <div class="building-stats-grid">
+                            <div class="building-stat-card">
+                                <div class="building-stat-value">${buildingHeight.toFixed(1)}m</div>
+                                <div class="building-stat-label">Height</div>
+                            </div>
+                            <div class="building-stat-card">
+                                <div class="building-stat-value">${floorArea.toFixed(0)}m²</div>
+                                <div class="building-stat-label">Floor Area</div>
+                            </div>
+                            <div class="building-stat-card">
+                                <div class="building-stat-value">${solarCapacityHigh.toFixed(1)} kWp</div>
+                                <div class="building-stat-label">Solar Potential</div>
+                            </div>
+                            <div class="building-stat-card">
+                                <div class="building-stat-value">${pvArea.toFixed(0)}m²</div>
+                                <div class="building-stat-label">PV Area</div>
+                            </div>
+                        </div>
+                        
+                        <div class="building-chart-container">
+                            <canvas id="building-chart" style="height: 140px;"></canvas>
+                        </div>
+                        
+                        <div class="building-quick-stats">
+                            <div class="quick-stat">
+                                <div class="quick-stat-value">${annualEnergy.toLocaleString()}</div>
+                                <div class="quick-stat-label">kWh/year</div>
+                            </div>
+                            <div class="quick-stat">
+                                <div class="quick-stat-value">$${monthlySavings.toFixed(0)}</div>
+                                <div class="quick-stat-label">Monthly Savings</div>
+                            </div>
+                            <div class="quick-stat">
+                                <div class="quick-stat-value">${(annualEnergy * 0.0004).toFixed(1)}t</div>
+                                <div class="quick-stat-label">CO₂ Saved/year</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Create single optimized chart for building popup
+        function createBuildingChart(properties) {
+            setTimeout(() => {
+                const ctx = document.getElementById('building-chart');
+                if (!ctx) return;
+                
+                // Clean up existing chart
+                if (buildingPopupChart) {
+                    buildingPopupChart.destroy();
+                }
+                
+                // Create a simple but informative doughnut chart showing solar potential breakdown
+                const solarCapacityLow = properties['Solar PV Capacity Low'] || 0;
+                const solarCapacityHigh = properties['Solar PV Capacity High'] || 0;
+                const unusedPotential = Math.max(0, ((properties['Suitable PV Area'] || 0) * 0.2) - solarCapacityHigh);
+                
+                buildingPopupChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Conservative Estimate', 'Optimistic Additional', 'Unused Potential'],
+                        datasets: [{
+                            data: [
+                                solarCapacityLow,
+                                solarCapacityHigh - solarCapacityLow,
+                                unusedPotential
+                            ],
+                            backgroundColor: ['#27ae60', '#f39c12', '#ecf0f1'],
+                            borderWidth: 2,
+                            borderColor: '#fff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    font: { size: 11 },
+                                    padding: 15
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return context.label + ': ' + context.parsed.toFixed(1) + ' kWp';
+                                    }
+                                }
+                            }
+                        },
+                        cutout: '60%'
+                    }
+                });
+            }, 100);
+        }
+        
+        // Initialize map with terrain
+        function initMap() {
+            map = new maplibregl.Map({
+                container: 'map',
+                style: {
+                    version: 8,
+                    sources: {
+                        'raster-tiles': {
+                            type: 'raster',
+                            tiles: [
+                                'https://tile.openstreetmap.org/{z}/{x}/{y}.png'
+                            ],
+                            tileSize: 256,
+                            attribution: '© OpenStreetMap contributors'
+                        }
+                    },
+                    layers: [
+                        {
+                            id: 'background',
+                            type: 'background',
+                            paint: {
+                                'background-color': '#f0f0f0'
+                            }
+                        },
+                        {
+                            id: 'raster-layer',
+                            type: 'raster',
+                            source: 'raster-tiles'
+                        }
+                    ]
+                },
+                center: [112.6304, -7.9797], // Malang coordinates
+                zoom: 14,
+                pitch: 45,
+                bearing: 0,
+                antialias: true
+            });
+            
+            map.addControl(new maplibregl.NavigationControl());
+            map.addControl(new maplibregl.FullscreenControl());
+            
+            // Load buildings when map is ready
+            map.on('load', loadBuildings);
+        }
+        
+        // Load and process CityJSON
+        async function loadBuildings() {
+            try {
+                console.log('🌍 Loading GEOSPECTRA data...');
+                const response = await fetch(CITYJSON_URL);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const cityjson = await response.json();
+                console.log('✅ CityJSON loaded:', cityjson);
+                
+                buildingsData = processCityJSON(cityjson);
+                console.log('✅ Processed buildings:', buildingsData.features.length);
+                
+                addBuildingsToMap(buildingsData);
+                updateStats(buildingsData);
+                updateLegend(currentColorMode);
+                updatePVCharts(buildingsData); // RESTORED
+                
+                // Hide loading
+                document.getElementById('loading').classList.add('hidden');
+                
+                // Fit map to buildings
+                if (buildingsData.features.length > 0) {
+                    const bounds = new maplibregl.LngLatBounds();
+                    buildingsData.features.forEach(feature => {
+                        if (feature.geometry.coordinates && feature.geometry.coordinates.length > 0) {
+                            feature.geometry.coordinates[0].forEach(coord => {
+                                bounds.extend([coord[0], coord[1]]);
+                            });
+                        }
+                    });
+                    map.fitBounds(bounds, { padding: 50 });
+                }
+                
+            } catch (error) {
+                console.error('❌ Error loading buildings:', error);
+                document.getElementById('loading').innerHTML = `
+                    <h3>❌ Error Loading GEOSPECTRA</h3>
+                    <p>${error.message}</p>
+                    <p>Please check:</p>
+                    <ul>
+                        <li>File path: ${CITYJSON_URL}</li>
+                        <li>CORS settings</li>
+                        <li>File format</li>
+                    </ul>
+                `;
+            }
+        }
+        
+        // Process CityJSON to GeoJSON - WITH UTM 49S TRANSFORMATION
+        function processCityJSON(cityjson) {
+            const features = [];
+            const vertices = cityjson.vertices || [];
+            
+            console.log(`Processing ${Object.keys(cityjson.CityObjects || {}).length} city objects`);
+            console.log(`Total vertices: ${vertices.length}`);
+            
+            // Transform all vertices from UTM 49S to WGS84
+            const transformedVertices = vertices.map(vertex => transformUTMToWGS84(vertex));
+            
+            Object.entries(cityjson.CityObjects || {}).forEach(([buildingId, building]) => {
+                try {
+                    if (building.type === 'Building' && building.geometry && building.geometry.length > 0) {
+                        const geometry = building.geometry[0];
+                        
+                        if (geometry.type === 'Solid' && geometry.boundaries && geometry.boundaries.length > 0) {
+                            // Find the ground face (lowest Z coordinates)
+                            let groundFace = null;
+                            let minAvgZ = Infinity;
+                            
+                            // Check each shell in the solid
+                            geometry.boundaries.forEach(shell => {
+                                shell.forEach(surface => {
+                                    surface.forEach(ring => {
+                                        if (ring.length >= 3) {
+                                            // Calculate average Z coordinate for this face
+                                            let totalZ = 0;
+                                            let validVertices = 0;
+                                            
+                                            ring.forEach(vertexIndex => {
+                                                if (vertexIndex < transformedVertices.length && transformedVertices[vertexIndex]) {
+                                                    totalZ += transformedVertices[vertexIndex][2];
+                                                    validVertices++;
+                                                }
+                                            });
+                                            
+                                            if (validVertices > 0) {
+                                                const avgZ = totalZ / validVertices;
+                                                if (avgZ < minAvgZ) {
+                                                    minAvgZ = avgZ;
+                                                    groundFace = ring;
+                                                }
+                                            }
+                                        }
+                                    });
+                                });
+                            });
+                            
+                            // If we found a ground face, create the footprint
+                            if (groundFace && groundFace.length >= 3) {
+                                const coordinates = [];
+                                
+                                groundFace.forEach(vertexIndex => {
+                                    if (vertexIndex < transformedVertices.length && transformedVertices[vertexIndex]) {
+                                        const vertex = transformedVertices[vertexIndex];
+                                        coordinates.push([vertex[0], vertex[1]]); // [longitude, latitude]
+                                    }
+                                });
+                                
+                                // Close the polygon if not already closed
+                                if (coordinates.length >= 3) {
+                                    if (coordinates[0][0] !== coordinates[coordinates.length-1][0] || 
+                                        coordinates[0][1] !== coordinates[coordinates.length-1][1]) {
+                                        coordinates.push([coordinates[0][0], coordinates[0][1]]);
+                                    }
+                                    
+                                    // Calculate building height from all vertices in the geometry
+                                    let maxHeight = 0;
+                                    let minHeight = Infinity;
+                                    
+                                    geometry.boundaries.forEach(shell => {
+                                        shell.forEach(surface => {
+                                            surface.forEach(ring => {
+                                                ring.forEach(vertexIndex => {
+                                                    if (vertexIndex < transformedVertices.length && transformedVertices[vertexIndex]) {
+                                                        const z = transformedVertices[vertexIndex][2];
+                                                        maxHeight = Math.max(maxHeight, z);
+                                                        minHeight = Math.min(minHeight, z);
+                                                    }
+                                                });
+                                            });
+                                        });
+                                    });
+                                    
+                                    const buildingHeight = maxHeight - minHeight;
+                                    
+                                    // Use building height from attributes if available, otherwise use calculated height
+                                    const attributeHeight = building.attributes ? building.attributes['Building Height'] : null;
+                                    const finalHeight = attributeHeight || buildingHeight || 5; // Default 5m if no height found
+                                    
+                                    const feature = {
+                                        type: 'Feature',
+                                        id: buildingId,
+                                        properties: {
+                                            id: buildingId,
+                                            height: finalHeight,
+                                            calculatedHeight: buildingHeight,
+                                            ...building.attributes
+                                        },
+                                        geometry: {
+                                            type: 'Polygon',
+                                            coordinates: [coordinates]
+                                        }
+                                    };
+                                    
+                                    features.push(feature);
+                                }
+                            }
+                        }
+                    }
+                } catch (error) {
+                    console.warn(`⚠️ Error processing building ${buildingId}:`, error);
+                }
+            });
+            
+            console.log(`✅ Successfully processed ${features.length} buildings`);
+            
+            return {
+                type: 'FeatureCollection',
+                features: features
+            };
+        }
+        
+        // Add buildings to map
+        function addBuildingsToMap(geojson) {
+            // Remove existing source and layers
+            if (map.getSource('buildings')) {
+                map.removeLayer('buildings-3d');
+                map.removeSource('buildings');
+            }
+            
+            // Add source
+            map.addSource('buildings', {
+                type: 'geojson',
+                data: geojson
+            });
+            
+            // Add 3D buildings layer
+            map.addLayer({
+                id: 'buildings-3d',
+                type: 'fill-extrusion',
+                source: 'buildings',
+                paint: {
+                    'fill-extrusion-color': getBuildingColor(),
+                    'fill-extrusion-height': ['*', ['get', 'height'], heightScale],
+                    'fill-extrusion-base': 0,
+                    'fill-extrusion-opacity': opacity
+                }
+            });
+            
+            // Add click handler with simplified popup
+            map.on('click', 'buildings-3d', (e) => {
+                const properties = e.features[0].properties;
+                
+                // Clean up existing chart
+                if (buildingPopupChart) {
+                    buildingPopupChart.destroy();
+                    buildingPopupChart = null;
+                }
+                
+                const popup = new maplibregl.Popup({
+                    maxWidth: '380px',
+                    className: 'building-detailed-popup'
+                })
+                    .setLngLat(e.lngLat)
+                    .setHTML(createBuildingPopup(properties))
+                    .addTo(map);
+                
+                // Create chart after popup is added to DOM
+                createBuildingChart(properties);
+                
+                // Clean up chart when popup is closed
+                popup.on('close', () => {
+                    if (buildingPopupChart) {
+                        buildingPopupChart.destroy();
+                        buildingPopupChart = null;
+                    }
+                });
+            });
+            
+            // Change cursor on hover
+            map.on('mouseenter', 'buildings-3d', () => {
+                map.getCanvas().style.cursor = 'pointer';
+            });
+            
+            map.on('mouseleave', 'buildings-3d', () => {
+                map.getCanvas().style.cursor = '';
+            });
+        }
+        
+        // Get building color based on current mode
+        function getBuildingColor() {
+            const scheme = colorSchemes[currentColorMode];
+            
+            if (!scheme) {
+                // For numeric properties (height, solar capacity, roof slope)
+                if (currentColorMode === 'building-height') {
+                    return [
+                        'interpolate',
+                        ['linear'],
+                        ['get', 'Building Height'],
+                        0, '#27ae60',
+                        10, '#f1c40f',
+                        20, '#f39c12',
+                        30, '#e74c3c'
+                    ];
+                } else if (currentColorMode === 'solar-capacity') {
+                    return [
+                        'interpolate',
+                        ['linear'],
+                        ['get', 'Solar PV Capacity High'],
+                        0, '#ecf0f1',
+                        5, '#f1c40f',
+                        10, '#27ae60',
+                        20, '#f39c12'
+                    ];
+                } else if (currentColorMode === 'roof-slope') {
+                    return [
+                        'interpolate',
+                        ['linear'],
+                        ['get', 'Roof Slope'],
+                        0, '#ecf0f1',
+                        15, '#27ae60',
+                        30, '#f39c12',
+                        45, '#e67e22'
+                    ];
+                }
+                return '#95a5a6';
+            }
+            
+            // For categorical properties
+            const propertyMap = {
+                'building-type': 'Building Type',
+                'roof-shape': 'Roof Shape',
+                'roof-material': 'Roof Material'
+            };
+            
+            const property = propertyMap[currentColorMode];
+            const caseExpression = ['case'];
+            
+            Object.entries(scheme).forEach(([value, color]) => {
+                if (value !== 'default') {
+                    caseExpression.push(['==', ['get', property], value], color);
+                }
+            });
+            
+            caseExpression.push(scheme.default);
+            return caseExpression;
+        }
+        
+        // Update statistics
+        function updateStats(geojson) {
+            const buildingCount = geojson.features.length;
+            
+            let totalSolarCapacity = 0;
+            const roofTypes = {};
+            
+            geojson.features.forEach(feature => {
+                const props = feature.properties;
+                totalSolarCapacity += props['Solar PV Capacity High'] || 0;
+                
+                const roofShape = props['Roof Shape'] || 'Unknown';
+                roofTypes[roofShape] = (roofTypes[roofShape] || 0) + 1;
+            });
+            
+            document.getElementById('building-count').textContent = buildingCount.toLocaleString();
+            document.getElementById('solar-capacity').textContent = `${totalSolarCapacity.toFixed(0)} kWp`;
+            
+            const roofTypesText = Object.entries(roofTypes)
+                .slice(0, 3)
+                .map(([type, count]) => `${type}: ${count}`)
+                .join(', ');
+            document.getElementById('roof-types').textContent = roofTypesText;
+        }
+        
+        // RESTORED: Update PV Charts with green/orange theme
+        function updatePVCharts(geojson) {
+            const capacityData = [];
+            const areaData = [];
+            const buildingTypes = {};
+            
+            let totalCapacity = 0;
+            let totalArea = 0;
+            
+            geojson.features.forEach(feature => {
+                const props = feature.properties;
+                const capacity = props['Solar PV Capacity High'] || 0;
+                const area = props['Suitable PV Area'] || 0;
+                const type = props['Building Type'] || 'Unknown';
+                
+                totalCapacity += capacity;
+                totalArea += area;
+                
+                if (!buildingTypes[type]) {
+                    buildingTypes[type] = { capacity: 0, area: 0, count: 0 };
+                }
+                buildingTypes[type].capacity += capacity;
+                buildingTypes[type].area += area;
+                buildingTypes[type].count += 1;
+            });
+            
+            // Update stats
+            document.getElementById('total-capacity').textContent = totalCapacity.toFixed(0);
+            document.getElementById('avg-capacity').textContent = (totalCapacity / geojson.features.length).toFixed(1);
+            document.getElementById('total-area').textContent = totalArea.toFixed(0);
+            document.getElementById('avg-area').textContent = (totalArea / geojson.features.length).toFixed(1);
+            
+            // Estimate annual energy (assuming 1.5 kWh/kWp/day average)
+            const annualEnergy = (totalCapacity * 1.5 * 365) / 1000; // MWh
+            const co2Savings = annualEnergy * 0.5; // Rough estimate: 0.5 tons CO2/MWh
+            
+            document.getElementById('annual-energy').textContent = annualEnergy.toFixed(0);
+            document.getElementById('co2-savings').textContent = co2Savings.toFixed(0);
+            
+            // Create charts
+            createCapacityChart(buildingTypes);
+            createAreaChart(buildingTypes);
+            createEnergyChart(geojson.features);
+        }
+        
+        // RESTORED: Create capacity chart with green/orange theme
+        function createCapacityChart(buildingTypes) {
+            const ctx = document.getElementById('capacityChart').getContext('2d');
+            if (charts.capacity) charts.capacity.destroy();
+            
+            const labels = Object.keys(buildingTypes);
+            const data = labels.map(type => buildingTypes[type].capacity);
+            
+            charts.capacity = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: [
+                            '#27ae60', '#f39c12', '#e67e22', '#2ecc71',
+                            '#f1c40f', '#e74c3c', '#95a5a6', '#34495e'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Solar Capacity by Building Type (kWp)'
+                        }
+                    }
+                }
+            });
+        }
+        
+        // RESTORED: Create area chart with green/orange theme
+        function createAreaChart(buildingTypes) {
+            const ctx = document.getElementById('areaChart').getContext('2d');
+            if (charts.area) charts.area.destroy();
+            
+            const labels = Object.keys(buildingTypes);
+            const data = labels.map(type => buildingTypes[type].area);
+            
+            charts.area = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'PV Area (m²)',
+                        data: data,
+                        backgroundColor: 'rgba(39, 174, 96, 0.8)',
+                        borderColor: 'rgba(39, 174, 96, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Suitable PV Area by Building Type (m²)'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+        
+        // RESTORED: Create energy chart with green/orange theme
+        function createEnergyChart(features) {
+            const ctx = document.getElementById('energyChart').getContext('2d');
+            if (charts.energy) charts.energy.destroy();
+            
+            // Create capacity ranges
+            const ranges = ['0-5 kWp', '5-10 kWp', '10-20 kWp', '20+ kWp'];
+            const rangeCounts = [0, 0, 0, 0];
+            
+            features.forEach(feature => {
+                const capacity = feature.properties['Solar PV Capacity High'] || 0;
+                if (capacity <= 5) rangeCounts[0]++;
+                else if (capacity <= 10) rangeCounts[1]++;
+                else if (capacity <= 20) rangeCounts[2]++;
+                else rangeCounts[3]++;
+            });
+            
+            charts.energy = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ranges,
+                    datasets: [{
+                        label: 'Number of Buildings',
+                        data: rangeCounts,
+                        borderColor: 'rgba(243, 156, 18, 1)',
+                        backgroundColor: 'rgba(243, 156, 18, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Building Distribution by Solar Capacity'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Update legend
+        function updateLegend(colorMode) {
+            const legendContent = document.getElementById('legend-content');
+            const scheme = colorSchemes[colorMode];
+            
+            if (scheme) {
+                legendContent.innerHTML = Object.entries(scheme)
+                    .filter(([key]) => key !== 'default')
+                    .map(([key, color]) => `
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: ${color}"></div>
+                            <span>${key}</span>
+                        </div>
+                    `).join('');
+            } else {
+                // For numeric properties, show gradient
+                legendContent.innerHTML = `
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: linear-gradient(to right, #27ae60, #f39c12, #e74c3c)"></div>
+                        <span>Low → High</span>
+                    </div>
+                `;
+            }
+        }
+        
+        // Event listeners
+        document.getElementById('color-mode').addEventListener('change', (e) => {
+            currentColorMode = e.target.value;
+            if (buildingsData && map.getSource('buildings')) {
+                map.setPaintProperty('buildings-3d', 'fill-extrusion-color', getBuildingColor());
+                updateLegend(currentColorMode);
+            }
+        });
+        
+        document.getElementById('height-scale').addEventListener('input', (e) => {
+            heightScale = parseFloat(e.target.value);
+            document.getElementById('height-scale-value').textContent = `${heightScale.toFixed(1)}x`;
+            if (buildingsData && map.getSource('buildings')) {
+                map.setPaintProperty('buildings-3d', 'fill-extrusion-height', ['*', ['get', 'height'], heightScale]);
+            }
+        });
+        
+        document.getElementById('opacity').addEventListener('input', (e) => {
+            opacity = parseFloat(e.target.value);
+            document.getElementById('opacity-value').textContent = opacity.toFixed(1);
+            if (buildingsData && map.getSource('buildings')) {
+                map.setPaintProperty('buildings-3d', 'fill-extrusion-opacity', opacity);
+            }
+        });
+        
+        // Initialize the application
+        initMap();
+    </script>
+</body>
+</html>
