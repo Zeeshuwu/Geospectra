@@ -92,45 +92,364 @@
     <script>
         feather.replace();
         
-        // Handle file upload
         document.getElementById('segmentation-upload').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
                 document.getElementById('status-1').textContent = 'File Upload: Completed';
-                document.querySelector('#status-1 + div .status-dot').style.backgroundColor = '#27ae60';
+                document.querySelector('#status-1').previousElementSibling.style.backgroundColor = '#27ae60';
             }
         });
         
-        // Run classification
+        // Run Classification Button with Processing Animation
         document.getElementById('run-classification').addEventListener('click', function() {
-            const fileInput = document.getElementById('segmentation-upload');
-            if (!fileInput.files.length) {
-                alert('Please upload a segmentation file first!');
-                return;
+            console.log('Run classification clicked');
+            
+            // Disable the button during processing
+            const runButton = this;
+            const originalButtonContent = runButton.innerHTML;
+            runButton.disabled = true;
+            runButton.innerHTML = `
+                <div class="flex items-center justify-center">
+                    <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                    Processing...
+                </div>
+            `;
+            
+            // Create processing popup
+            const processingPopup = document.createElement('div');
+            processingPopup.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4';
+            processingPopup.innerHTML = `
+                <div class="bg-white rounded-xl max-w-md w-full p-8 text-center">
+                    <div class="mb-6">
+                        <div class="mx-auto w-16 h-16 bg-gradient-to-r from-orange-500 to-orange-600 rounded-full flex items-center justify-center mb-4">
+                            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">Processing Classification</h3>
+                        <p class="text-gray-600 mb-4">GEOSPECTRA AI is classifying roof materials...</p>
+                    </div>
+                    
+                    <!-- Processing Steps -->
+                    <div class="space-y-3 mb-6">
+                        <div class="processing-step flex items-center text-left" data-step="0">
+                            <div class="w-4 h-4 rounded-full bg-gray-300 mr-3 step-indicator"></div>
+                            <span class="text-sm text-gray-600 step-text">Loading segmentation data...</span>
+                        </div>
+                        <div class="processing-step flex items-center text-left" data-step="1">
+                            <div class="w-4 h-4 rounded-full bg-gray-300 mr-3 step-indicator"></div>
+                            <span class="text-sm text-gray-600 step-text">Analyzing roof materials...</span>
+                        </div>
+                        <div class="processing-step flex items-center text-left" data-step="2">
+                            <div class="w-4 h-4 rounded-full bg-gray-300 mr-3 step-indicator"></div>
+                            <span class="text-sm text-gray-600 step-text">Running classification model...</span>
+                        </div>
+                        <div class="processing-step flex items-center text-left" data-step="3">
+                            <div class="w-4 h-4 rounded-full bg-gray-300 mr-3 step-indicator"></div>
+                            <span class="text-sm text-gray-600 step-text">Calculating tax estimates...</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Progress Bar -->
+                    <div class="w-full bg-gray-200 rounded-full h-2 mb-4">
+                        <div class="bg-gradient-to-r from-orange-500 to-orange-600 h-2 rounded-full transition-all duration-1000 ease-out" style="width: 0%" id="progressBar"></div>
+                    </div>
+                    
+                    <p class="text-xs text-gray-500">Analyzing roof materials and estimating taxes...</p>
+                </div>
+            `;
+            
+            document.body.appendChild(processingPopup);
+            
+            // Simulate processing steps with delays
+            const steps = [
+                { delay: 1000, message: "Loading segmentation data...", progress: 25 },
+                { delay: 2000, message: "Analyzing roof materials...", progress: 50 },
+                { delay: 2500, message: "Running classification model...", progress: 75 },
+                { delay: 2000, message: "Calculating tax estimates...", progress: 100 }
+            ];
+            
+            let currentStep = 0;
+            const progressBar = document.getElementById('progressBar');
+            
+            function processStep() {
+                if (currentStep < steps.length) {
+                    const step = steps[currentStep];
+                    
+                    setTimeout(() => {
+                        // Update progress bar
+                        progressBar.style.width = step.progress + '%';
+                        
+                        // Update step indicator
+                        const stepElement = document.querySelector(`[data-step="${currentStep}"]`);
+                        if (stepElement) {
+                            const indicator = stepElement.querySelector('.step-indicator');
+                            const text = stepElement.querySelector('.step-text');
+                            
+                            indicator.classList.remove('bg-gray-300');
+                            indicator.classList.add('bg-orange-500');
+                            text.classList.add('text-orange-600', 'font-medium');
+                            
+                            // Add checkmark
+                            indicator.innerHTML = '<i data-feather="check" class="w-2 h-2 text-white"></i>';
+                            feather.replace();
+                        }
+                        
+                        currentStep++;
+                        processStep();
+                    }, step.delay);
+                } else {
+                    // Processing complete - show results after a brief delay
+                    setTimeout(() => {
+                        processingPopup.remove();
+                        showClassificationResults();
+                        
+                        // Re-enable the button
+                        runButton.disabled = false;
+                        runButton.innerHTML = originalButtonContent;
+                        feather.replace();
+                    }, 1000);
+                }
             }
             
-            // Update status
-            document.getElementById('status-2').textContent = 'Material Classification: Processing';
-            document.querySelector('#status-2 + div .status-dot').style.backgroundColor = '#f39c12';
-            
-            // Simulate processing
-            setTimeout(() => {
-                document.getElementById('status-2').textContent = 'Material Classification: Completed';
-                document.querySelector('#status-2 + div .status-dot').style.backgroundColor = '#27ae60';
-                document.getElementById('status-3').textContent = 'Tax Estimation: Processing';
-                document.querySelector('#status-3 + div .status-dot').style.backgroundColor = '#f39c12';
-                
-                setTimeout(() => {
-                    document.getElementById('status-3').textContent = 'Tax Estimation: Completed';
-                    document.querySelector('#status-3 + div .status-dot').style.backgroundColor = '#27ae60';
-                    
-                    // Redirect to results
-                    setTimeout(() => {
-                        window.location.href = 'result2.html'; // Will show classification results
-                    }, 1000);
-                }, 1500);
-            }, 2000);
+            // Start processing simulation
+            processStep();
         });
+        
+        function showClassificationResults() {
+            const popup = document.createElement('div');
+            popup.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4';
+            popup.innerHTML = `
+                <div class="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-auto">
+                    <div class="p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <div>
+                                <h3 class="text-2xl font-bold text-gray-800 flex items-center">
+                                    <div class="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center mr-3">
+                                        <i data-feather="check" class="w-5 h-5 text-white"></i>
+                                    </div>
+                                    Classification Complete!
+                                </h3>
+                                <p class="text-gray-600 mt-1">Roof materials have been successfully classified</p>
+                            </div>
+                            <button class="close-popup text-gray-500 hover:text-gray-700">
+                                <i data-feather="x" class="w-6 h-6"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="grid md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <h4 class="font-medium text-gray-700 mb-3 flex items-center">
+                                    <i data-feather="image" class="w-5 h-5 mr-2 text-orange-600"></i>
+                                    Classification Preview
+                                </h4>
+                                <img src="images/Classification Output.jpg" alt="Classification Result" class="w-full h-64 object-cover rounded-lg border border-gray-200">
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-gray-700 mb-3 flex items-center">
+                                    <i data-feather="bar-chart-2" class="w-5 h-5 mr-2 text-blue-600"></i>
+                                    Classification Statistics
+                                </h4>
+                                <div class="bg-gray-50 rounded-lg p-4">
+                                    <div class="space-y-3">
+                                        <div class="flex justify-between">
+                                            <span class="text-sm text-gray-600">Roof Types Detected:</span>
+                                            <span class="text-lg font-semibold text-orange-600">5 different types</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-sm text-gray-600">Most Common Type:</span>
+                                            <span class="text-lg font-semibold text-orange-600">Concrete Tile (62%)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Material Distribution Chart -->
+                        <div class="mb-6">
+                            <h4 class="font-medium text-gray-700 mb-3 flex items-center">
+                                <i data-feather="pie-chart" class="w-5 h-5 mr-2 text-purple-600"></i>
+                                Material Distribution
+                            </h4>
+                            <div class="bg-gray-50 rounded-lg p-4">
+                                <div class="space-y-2">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center">
+                                            <div class="w-4 h-4 rounded mr-2" style="background-color: #8B4513;"></div>
+                                            <span class="text-sm">Concrete Glazed Tile</span>
+                                        </div>
+                                        <span class="text-sm font-medium">62%</span>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center">
+                                            <div class="w-4 h-4 rounded mr-2" style="background-color: #C0C0C0;"></div>
+                                            <span class="text-sm">Concrete Aluminum Tile</span>
+                                        </div>
+                                        <span class="text-sm font-medium">18%</span>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center">
+                                            <div class="w-4 h-4 rounded mr-2" style="background-color: #D2691E;"></div>
+                                            <span class="text-sm">Clay Tile Shingle</span>
+                                        </div>
+                                        <span class="text-sm font-medium">8%</span>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center">
+                                            <div class="w-4 h-4 rounded mr-2" style="background-color: #696969;"></div>
+                                            <span class="text-sm">Asbestos Sheet</span>
+                                        </div>
+                                        <span class="text-sm font-medium">8%</span>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center">
+                                            <div class="w-4 h-4 rounded mr-2" style="background-color: #708090;"></div>
+                                            <span class="text-sm">Metal Sheet</span>
+                                        </div>
+                                        <span class="text-sm font-medium">4%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-end gap-3">
+                            <button class="close-popup px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition duration-200">
+                                Close
+                            </button>
+                            <button class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200 flex items-center">
+                                <i data-feather="download" class="w-4 h-4 mr-2"></i>
+                                Download Results
+                            </button>
+                            <button id="view-3d" class="px-6 py-2 bg-gradient-to-r from-green-600 to-orange-600 text-white rounded-lg hover:from-green-700 hover:to-orange-700 transition duration-200 flex items-center">
+                                <i data-feather="cube" class="w-4 h-4 mr-2"></i>
+                                See in 3D Viewer
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(popup);
+            
+            // Add close functionality
+            popup.querySelectorAll('.close-popup').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    popup.remove();
+                });
+            });
+            
+            // Close on backdrop click
+            popup.addEventListener('click', (e) => {
+                if (e.target === popup) {
+                    popup.remove();
+                }
+            });
+            
+            // 3D Viewer Button with Processing Animation
+            popup.querySelector('#view-3d').addEventListener('click', function() {
+                const viewButton = this;
+                const originalContent = viewButton.innerHTML;
+                
+                // Disable button and show loading
+                viewButton.disabled = true;
+                viewButton.innerHTML = `
+                    <div class="flex items-center justify-center">
+                        <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                        Loading 3D...
+                    </div>
+                `;
+                
+                // Create 3D loading popup
+                const loadingPopup = document.createElement('div');
+                loadingPopup.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4';
+                loadingPopup.innerHTML = `
+                    <div class="bg-white rounded-xl max-w-md w-full p-8 text-center">
+                        <div class="mb-6">
+                            <div class="mx-auto w-16 h-16 bg-gradient-to-r from-green-500 to-blue-600 rounded-full flex items-center justify-center mb-4">
+                                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">Preparing 3D Visualization</h3>
+                            <p class="text-gray-600 mb-4">Loading interactive 3D viewer...</p>
+                        </div>
+                        
+                        <!-- 3D Loading Steps -->
+                        <div class="space-y-3 mb-6">
+                            <div class="processing-step flex items-center text-left" data-step="0">
+                                <div class="w-4 h-4 rounded-full bg-gray-300 mr-3 step-indicator"></div>
+                                <span class="text-sm text-gray-600 step-text">Loading 3D models...</span>
+                            </div>
+                            <div class="processing-step flex items-center text-left" data-step="1">
+                                <div class="w-4 h-4 rounded-full bg-gray-300 mr-3 step-indicator"></div>
+                                <span class="text-sm text-gray-600 step-text">Rendering textures...</span>
+                            </div>
+                            <div class="processing-step flex items-center text-left" data-step="2">
+                                <div class="w-4 h-4 rounded-full bg-gray-300 mr-3 step-indicator"></div>
+                                <span class="text-sm text-gray-600 step-text">Initializing viewer...</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Progress Bar -->
+                        <div class="w-full bg-gray-200 rounded-full h-2 mb-4">
+                            <div class="bg-gradient-to-r from-green-500 to-blue-600 h-2 rounded-full transition-all duration-1000 ease-out" style="width: 0%" id="progress3D"></div>
+                        </div>
+                        
+                        <p class="text-xs text-gray-500">Preparing immersive 3D experience...</p>
+                    </div>
+                `;
+                
+                document.body.appendChild(loadingPopup);
+                
+                // 3D Loading steps
+                const steps3D = [
+                    { delay: 1500, progress: 33 },
+                    { delay: 1500, progress: 66 },
+                    { delay: 2000, progress: 100 }
+                ];
+                
+                let currentStep3D = 0;
+                const progress3D = document.getElementById('progress3D');
+                
+                function process3DStep() {
+                    if (currentStep3D < steps3D.length) {
+                        const step = steps3D[currentStep3D];
+                        
+                        setTimeout(() => {
+                            // Update progress bar
+                            progress3D.style.width = step.progress + '%';
+                            
+                            // Update step indicator
+                            const stepElement = document.querySelector(`[data-step="${currentStep3D}"]`);
+                            if (stepElement) {
+                                const indicator = stepElement.querySelector('.step-indicator');
+                                const text = stepElement.querySelector('.step-text');
+                                
+                                indicator.classList.remove('bg-gray-300');
+                                indicator.classList.add('bg-green-500');
+                                text.classList.add('text-green-600', 'font-medium');
+                                
+                                // Add checkmark
+                                indicator.innerHTML = '<i data-feather="check" class="w-2 h-2 text-white"></i>';
+                                feather.replace();
+                            }
+                            
+                            currentStep3D++;
+                            process3DStep();
+                        }, step.delay);
+                    } else {
+                        // 3D Loading complete - redirect to 3D viewer
+                        setTimeout(() => {
+                            loadingPopup.remove();
+                            popup.remove();
+                            window.location.href = '3d-viewer.html';
+                        }, 1000);
+                    }
+                }
+                
+                // Start 3D processing simulation
+                process3DStep();
+            });
+            
+            // Re-render feather icons
+            feather.replace();
+        }
     </script>
 </body>
 </html>
