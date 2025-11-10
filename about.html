@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About GEOSPECTRA | Pioneering Spatial Intelligence</title>
+    <link rel="icon" href="images/logo Geospectra.png">
+<title>GEOSPECTRA: Pioneering The Next Generation Of Spatial Intelligence</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/feather-icons"></script>
@@ -14,120 +15,111 @@
     
     <main class="min-h-screen">
         <!-- Hero Section -->
-        <section class="relative bg-gradient-to-br from-green-600 to-orange-600 text-white py-20">
-            <div class="container mx-auto px-6 text-center">
-                <h1 class="text-4xl md:text-5xl font-bold mb-6">Pioneering The Next Generation Of Spatial Intelligence</h1>
-                <p class="text-xl mb-8 text-gray-100 max-w-2xl mx-auto">Comprehensive geospatial intelligence solution combining AI, 3D modeling, and solar analysis for smarter urban development</p>
-</div>
+        <section class="relative text-white py-32 overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-green-600/90 to-orange-600/90 z-10"></div>
+            <div class="absolute inset-0 bg-cover bg-center opacity-70" style="background-image: url('images/Title.jpeg');"></div>
+            <div class="container mx-auto px-6 relative z-20">
+                <div class="max-w-2xl mx-auto text-center">
+                    <h1 class="text-4xl md:text-5xl font-bold mb-6">GEOSPECTRA: Pioneering The Next Generation Of Spatial Intelligence</h1>
+                    <p class="text-xl mb-8 text-gray-100">AI-powered geospatial intelligence platform for automated building analysis, solar potential assessment, and urban planning optimization.</p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                        <a href="tools.html" class="bg-white text-green-600 hover:bg-green-50 px-8 py-3 rounded-lg font-semibold text-center transition duration-300 shadow-lg">Start Analysis</a>
+                        <a href="#features" class="border-2 border-white hover:bg-white hover:bg-opacity-10 px-8 py-3 rounded-lg font-semibold text-center transition duration-300">Learn More</a>
+                    </div>
+                </div>
+            </div>
         </section>
-
-        <!-- The Challenge -->
-        <section class="py-20 bg-white">
+<!-- Features Section -->
+        <section id="features" class="py-20 bg-white">
             <div class="container mx-auto px-6">
                 <div class="text-center mb-16">
-                    <h2 class="text-3xl font-bold text-gray-800 mb-4">Indonesia's Dual Challenge</h2>
-                    <p class="text-lg text-gray-600 max-w-3xl mx-auto">Every nation is striving for sustainability. For Indonesia, this journey is complicated by climate risks and inefficient tax collection.</p>
+                    <h2 class="text-3xl font-bold text-gray-800 mb-4">GEOSPECTRA Analysis Tools</h2>
+                    <p class="text-lg text-gray-600 max-w-2xl mx-auto">Complete workflow from satellite imagery to 3D solar potential analysis</p>
                 </div>
                 
-                <div class="grid md:grid-cols-2 gap-8">
-                    <!-- Tax Problem -->
-                    <div class="bg-gray-50 rounded-xl p-8 hover:shadow-lg transition duration-300 border border-gray-200">
-                        <div class="w-16 h-16 bg-orange-100 rounded-lg flex items-center justify-center mb-6">
-                            <i data-feather="dollar-sign" class="text-orange-600 w-8 h-8"></i>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <!-- Tool 1 -->
+                    <div class="bg-gray-50 rounded-xl p-6 hover:shadow-lg transition duration-300 border border-gray-200">
+                        <div class="w-16 h-16 bg-green-100 rounded-lg flex items-center justify-center mb-6">
+                            <i data-feather="layers" class="text-green-600 w-8 h-8"></i>
                         </div>
-                        <h3 class="text-xl font-semibold mb-4 text-gray-800">The Tax Problem</h3>
-                        <p class="text-gray-600 mb-4">Our tax-to-GDP ratio is one of the lowest in ASEAN. A key reason? Our land and property tax system still relies on conventional, often inaccurate, manual data.</p>
-                        <p class="text-gray-600">This leads to property misvaluation, lost revenue, and an unfair system for everyone.</p>
+                        <h3 class="text-xl font-semibold mb-3 text-gray-800">Building Segmentation</h3>
+                        <p class="text-gray-600 mb-4">Extract building footprints from satellite imagery using AI-powered segmentation algorithms with high precision accuracy.</p>
+                        <a href="tools.html#segmentation" class="text-green-600 font-medium flex items-center">
+                            Learn more <i data-feather="arrow-right" class="ml-2 w-4 h-4"></i>
+                        </a>
                     </div>
                     
-                    <!-- Energy Problem -->
-                    <div class="bg-gray-50 rounded-xl p-8 hover:shadow-lg transition duration-300 border border-gray-200">
-                        <div class="w-16 h-16 bg-green-100 rounded-lg flex items-center justify-center mb-6">
+                    <!-- Tool 2 -->
+                    <div class="bg-gray-50 rounded-xl p-6 hover:shadow-lg transition duration-300 border border-gray-200">
+                        <div class="w-16 h-16 bg-orange-100 rounded-lg flex items-center justify-center mb-6">
+                            <i data-feather="home" class="text-orange-600 w-8 h-8"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3 text-gray-800">Roof Classification & Tax Estimation</h3>
+                        <p class="text-gray-600 mb-4">Classify roof materials and estimate property tax values based on building characteristics and local regulations.</p>
+                        <a href="tools.html#classification" class="text-orange-600 font-medium flex items-center">
+                            Learn more <i data-feather="arrow-right" class="ml-2 w-4 h-4"></i>
+                        </a>
+                    </div>
+                    
+                    <!-- Tool 3 -->
+                    <div class="bg-gray-50 rounded-xl p-6 hover:shadow-lg transition duration-300 border border-gray-200">
+                        <div class="w-16 h-16 bg-gradient-to-br from-green-100 to-orange-100 rounded-lg flex items-center justify-center mb-6">
                             <i data-feather="sun" class="text-green-600 w-8 h-8"></i>
                         </div>
-                        <h3 class="text-xl font-semibold mb-4 text-gray-800">The Energy Problem</h3>
-                        <p class="text-gray-600 mb-4">Indonesia's sunlight potential is immense. Billions of square meters of rooftops are waiting to be transformed into clean energy sources.</p>
-                        <p class="text-gray-600">Yet, today, calculating this city-wide potential on a mass scale is incredibly difficult.</p>
+                        <h3 class="text-xl font-semibold mb-3 text-gray-800">3D Visualization & Solar Analysis</h3>
+                        <p class="text-gray-600 mb-4">Generate 3D building models and calculate comprehensive photovoltaic potential with economic analysis.</p>
+                        <a href="tools.html#solar" class="text-green-600 font-medium flex items-center">
+                            Learn more <i data-feather="arrow-right" class="ml-2 w-4 h-4"></i>
+                        </a>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- The Solution -->
+        <!-- Results Preview -->
         <section class="py-20 bg-gray-50">
             <div class="container mx-auto px-6">
                 <div class="text-center mb-16">
-                    <h2 class="text-3xl font-bold text-gray-800 mb-4">The GEOSPECTRA Solution</h2>
-                    <p class="text-lg text-gray-600 max-w-3xl mx-auto">An intelligent AI platform that processes satellite imagery with deep learning to create detailed 3D building models</p>
+                    <h2 class="text-3xl font-bold text-gray-800 mb-4">GEOSPECTRA In Action</h2>
+                    <p class="text-lg text-gray-600 max-w-2xl mx-auto">Experience the power of advanced spatial intelligence</p>
                 </div>
                 
-                <div class="grid lg:grid-cols-2 gap-8 items-center mb-16">
+                <div class="grid lg:grid-cols-2 gap-8 items-center">
                     <div>
-                        <img src="images/About page.png" alt="GEOSPECTRA AI Platform" class="rounded-xl shadow-lg">
+                        <img src="images/Landing Page 1.png" alt="GEOSPECTRA Segmentation Result" class="rounded-xl shadow-lg mb-6">
+                        <img src="images/Title.jpeg" alt="GEOSPECTRA 3D Visualization" class="rounded-xl shadow-lg">
                     </div>
                     <div>
                         <div class="bg-white p-8 rounded-xl shadow-lg">
-                            <h3 class="text-2xl font-semibold mb-4 text-gray-800">Dual Benefits for Sustainable Development</h3>
-                            <p class="text-gray-600 mb-6">Our platform automatically generates detailed 3D models of every building, classifying its specific roof type and calculating its solar energy capacity.</p>
+                            <h3 class="text-2xl font-semibold mb-4 text-gray-800">Comprehensive Spatial Intelligence</h3>
+                            <p class="text-gray-600 mb-6">GEOSPECTRA provides actionable insights for urban planners, solar installers, tax assessors, and smart city initiatives:</p>
                             
                             <ul class="space-y-4">
                                 <li class="flex items-start">
                                     <i data-feather="check-circle" class="text-green-500 mr-3 mt-1 flex-shrink-0"></i>
-                                    <span class="text-gray-700">Government can update taxation database with accurate property valuation</span>
+                                    <span class="text-gray-700">AI-powered building footprint extraction with >95% precision</span>
                                 </li>
                                 <li class="flex items-start">
                                     <i data-feather="check-circle" class="text-green-500 mr-3 mt-1 flex-shrink-0"></i>
-                                    <span class="text-gray-700">Energy sector can pinpoint prime locations for rooftop solar projects</span>
+                                    <span class="text-gray-700">Advanced roof material classification for accurate tax assessment</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i data-feather="check-circle" class="text-green-500 mr-3 mt-1 flex-shrink-0"></i>
+                                    <span class="text-gray-700">3D building modeling with comprehensive solar potential analysis</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i data-feather="check-circle" class="text-green-500 mr-3 mt-1 flex-shrink-0"></i>
+                                    <span class="text-gray-700">Multi-format export (Shapefile, GeoTIFF, CityJSON, CityGML)</span>
                                 </li>
                             </ul>
+                            
+                            <a href="tools.html" class="mt-8 inline-block bg-gradient-to-r from-green-600 to-orange-600 hover:from-green-700 hover:to-orange-700 text-white px-6 py-3 rounded-lg font-medium transition duration-300">
+                                Start Your Analysis
+                            </a>
                         </div>
                     </div>
                 </div>
-                
-                <!-- Technology Stack -->
-                <div class="bg-white rounded-xl shadow-lg p-8 border border-gray-200">
-                    <h3 class="text-2xl font-semibold mb-6 text-gray-800 text-center">Our Technology Stack</h3>
-                    
-                    <div class="grid md:grid-cols-3 gap-6">
-                        <!-- AI Models -->
-                        <div class="bg-gray-50 rounded-lg p-6">
-                            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                                <i data-feather="cpu" class="text-blue-600 w-6 h-6"></i>
-                            </div>
-                            <h4 class="font-semibold text-gray-800 mb-2">Advanced AI Models</h4>
-                            <p class="text-gray-600 text-sm">U-Net architectures for precise building segmentation and roof classification</p>
-                        </div>
-                        
-                        <!-- 3D Modeling -->
-                        <div class="bg-gray-50 rounded-lg p-6">
-                            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
-                                <i data-feather="box" class="text-purple-600 w-6 h-6"></i>
-                            </div>
-                            <h4 class="font-semibold text-gray-800 mb-2">3D Modeling</h4>
-                            <p class="text-gray-600 text-sm">Automatic algorithm processes 2D footprints into detailed LOD2 roof geometry</p>
-                        </div>
-                        
-                        <!-- Microservices -->
-                        <div class="bg-gray-50 rounded-lg p-6">
-                            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
-                                <i data-feather="server" class="text-green-600 w-6 h-6"></i>
-                            </div>
-                            <h4 class="font-semibold text-gray-800 mb-2">Scalable Architecture</h4>
-                            <p class="text-gray-600 text-sm">Microservices-based platform for city-wide analysis</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Call to Action -->
-        <section class="py-20 bg-gradient-to-br from-green-600 to-orange-600 text-white">
-            <div class="container mx-auto px-6 text-center">
-                <h2 class="text-3xl md:text-4xl font-bold mb-6">Join Us in Building Indonesia's Future</h2>
-                <p class="text-xl mb-8 opacity-90 max-w-2xl mx-auto">We are advancing spatial accuracy for Indonesia - fair taxation and rapid transition to clean energy</p>
-                <a href="https://geodesi.ugm.ac.id/" class="inline-block bg-white hover:bg-gray-100 text-green-600 px-8 py-3 rounded-lg font-semibold transition duration-300 shadow-lg">
-                    Get In Touch
-                </a>
             </div>
         </section>
     </main>
