@@ -16,7 +16,6 @@
 - **Interactive ROI Selection**: Draw rectangles, polygons, or circles on satellite imagery
 - **Multi-Source Imagery**: Support for Google Satellite, Landsat 8, and custom uploads
 - **Real-time Processing**: Live progress tracking with step-by-step analysis
-- **High Accuracy**: 94.2% model accuracy with sub-meter resolution
 
 ###  **Roof Classification**
 - **Material Analysis**: Utilizing U-Net for Roof material detection and classification
@@ -150,12 +149,16 @@ This platform was developed for the **ASEAN Geospatial Challenge**, focusing on:
 ## 👥 Team
 
 **GEOSPECTRA Team**
+- Mohammad Zulfi Rahadi Putra
+- Raffi Satya Nugraha
+- Najieda Azka
+- Salzabilla Enzal Putri
 - Department of Geodetic Engineering
 - Universitas Gadjah Mada
 - Yogyakarta, Indonesia
 
 ## 📊 Performance Metrics
 
-- **Building Detection Accuracy**: 94.2%
+
 - **Processing Speed**: < 10 seconds for typical ROI
 - **Resolution Support**: 0.5m/pixel to 30m/pixel
