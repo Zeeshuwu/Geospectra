@@ -32,10 +32,11 @@ class CustomNavbar extends HTMLElement {
           align-items: center;
           text-decoration: none;
         }
-        .logo-icon {
+        .logo img {
+          height: 32px;
           margin-right: 0.5rem;
         }
-        .nav-links {
+.nav-links {
           display: flex;
           gap: 2rem;
         }
@@ -65,15 +66,16 @@ class CustomNavbar extends HTMLElement {
       <nav>
         <div class="container">
           <a href="index.html" class="logo">
-            <img src="logo.jpg" alt="GEOSPECTRA Logo" class="h-8 mr-2">
+            <img src="images/logo Geospectra.png" alt="GEOSPECTRA Logo" class="h-8 mr-2">
             GEOSPECTRA
           </a>
-          <div class="nav-links">
-            <a href="/Geospectra/index.html" class="nav-link">Home</a>
-            <a href="/Geospectra/tools.html" class="nav-link">Tools</a>
-            <a href="/Geospectra/about.html" class="nav-link">About</a>
-            <a href="/Geospectra/team.html" class="nav-link">Meet Our Team</a>
-          </div>
+<div class="nav-links">
+          <a href="index.html" class="nav-link">Home</a>
+          <a href="tools.html" class="nav-link">Tools</a>
+          <a href="about.html" class="nav-link">About</a>
+          <a href="team.html" class="nav-link">Meet Our Team</a>
+          <a href="https://arcg.is/P5LSK0" target="_blank" class="nav-link">Report an Issue</a>
+</div>
         </div>
       </nav>
     `;
