@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Reference - GEOSPECTRA</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav id="navbar"></nav>
+
+    <main class="api-container">
+        <section class="api-header">
+            <h1>GEOSPECTRA Internal API Reference</h1>
+            <p>Documentation for APIs used within the GEOSPECTRA system</p>
+        </section>
+
+        <!-- Map Services -->
+        <section class="api-section">
+            <h2>🗺️ Map Services</h2>
+            
+            <div class="endpoint">
+                <h3>Leaflet Map Integration</h3>
+                <p>APIs used for interactive map functionality</p>
+                
+                <h4>Initialize Map</h4>
+                <pre><code>
+// Initialize map instance
+const map = L.map('map').setView([51.505, -0.09], 13);
+
+// Add tile layer
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors'
+}).addTo(map);
+                </code></pre>
+
+                <h4>Add Markers</h4>
+                <pre><code>
+// Add marker to map
+const marker = L.marker([lat, lng])
+    .addTo(map)
+    .bindPopup('Location information');
+                </code></pre>
+            </div>
+
+            <div class="endpoint">
+                <h3>Tile Layer Services</h3>
+                <ul>
+                    <li><strong>OpenStreetMap:</strong> <code>https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png</code></li>
+                    <li><strong>Satellite View:</strong> <code>https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}</code></li>
+                    <li><strong>Terrain View:</strong> <code>https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png</code></li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Data Management -->
+        <section class="api-section">
+            <h2>📊 Data Management</h2>
+            
+            <div class="endpoint">
+                <h3>Local Storage API</h3>
+                <p>Client-side data persistence</p>
+                
+                <h4>Save Data</h4>
+                <pre><code>
+// Save user preferences
+localStorage.setItem('geospectra_settings', JSON.stringify({
+    theme: 'dark',
+    defaultZoom: 10,
+    lastLocation: [lat, lng]
+}));
+                </code></pre>
+
+                <h4>Retrieve Data</h4>
+                <pre><code>
+// Get saved settings
+const settings = JSON.parse(localStorage.getItem('geospectra_settings'));
+                </code></pre>
+            </div>
+
+            <div class="endpoint">
+                <h3>File Upload API</h3>
+                <p>Handle geospatial file uploads</p>
+                
+                <pre><code>
+// File upload handler
+document.getElementById('fileInput').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            // Process uploaded file
+            processGeospatialFile(event.target.result);
+        };
+        reader.readAsText(file);
+    }
+});
+                </code></pre>
+            </div>
+        </section>
+
+        <!-- Navigation System -->
+        <section class="api-section">
+            <h2>🧭 Navigation System</h2>
+            
+            <div class="endpoint">
+                <h3>Dynamic Navigation Loading</h3>
+                <p>Load navigation components dynamically</p>
+                
+                <pre><code>
+// Load navbar
+fetch('navbar.html')
+    .then(response => response.text())
+    .then(data => {
+        document.getElementById('navbar').innerHTML = data;
+        initializeNavigation();
+    });
+
+// Initialize navigation functionality
+function initializeNavigation() {
+    // Add active class to current page
+    const currentPage = window.location.pathname.split('/').pop();
+    const navLinks = document.querySelectorAll('.nav-link');
+    
+    navLinks.forEach(link => {
+        if (link.getAttribute('href') === currentPage) {
+            link.classList.add('active');
+        }
+    });
+}
+                </code></pre>
+            </div>
+
+            <div class="endpoint">
+                <h3>Mobile Menu Toggle</h3>
+                <pre><code>
+// Mobile menu functionality
+function toggleMobileMenu() {
+    const mobileMenu = document.getElementById('mobile-menu');
+    mobileMenu.classList.toggle('active');
+}
+                </code></pre>
+            </div>
+        </section>
+
+        <!-- Form Processing -->
+        <section class="api-section">
+            <h2>📝 Form Processing</h2>
+            
+            <div class="endpoint">
+                <h3>Contact Form API</h3>
+                <p>Handle contact form submissions</p>
+                
+                <pre><code>
+// Form submission handler
+document.getElementById('contactForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = {
+        name: document.getElementById('name').value,
+        email: document.getElementById('email').value,
+        message: document.getElementById('message').value
+    };
+    
+    // Process form data
+    submitContactForm(formData);
+});
+
+function submitContactForm(data) {
+    // Simulate form processing
+    console.log('Form submitted:', data);
+    showSuccessMessage('Thank you for your message!');
+}
+                </code></pre>
+            </div>
+
+            <div class="endpoint">
+                <h3>Issue Report API</h3>
+                <pre><code>
+// Issue report form
+function submitIssueReport(issueData) {
+    // Validate and process issue report
+    if (validateIssueData(issueData)) {
+        // Send to processing system
+        processIssueReport(issueData);
+    }
+}
+                </code></pre>
+            </div>
+        </section>
+
+        <!-- Geolocation Services -->
+        <section class="api-section">
+            <h2>📍 Geolocation Services</h2>
+            
+            <div class="endpoint">
+                <h3>Browser Geolocation API</h3>
+                <p>Get user's current location</p>
+                
+                <pre><code>
+// Get current position
+function getCurrentLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            function(position) {
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
+                
+                // Update map view
+                map.setView([lat, lng], 15);
+                
+                // Add marker for current location
+                L.marker([lat, lng])
+                    .addTo(map)
+                    .bindPopup('Your current location')
+                    .openPopup();
+            },
+            function(error) {
+                console.error('Geolocation error:', error);
+                showErrorMessage('Unable to get your location');
+            }
+        );
+    }
+}
+                </code></pre>
+            </div>
+
+            <div class="endpoint">
+                <h3>Coordinate Conversion</h3>
+                <pre><code>
+// Convert coordinates between different formats
+function convertCoordinates(lat, lng, format) {
+    switch(format) {
+        case 'dms':
+            return convertToDMS(lat, lng);
+        case 'utm':
+            return convertToUTM(lat, lng);
+        default:
+            return { lat, lng };
+    }
+}
+                </code></pre>
+            </div>
+        </section>
+
+        <!-- UI Components -->
+        <section class="api-section">
+            <h2>🎨 UI Components</h2>
+            
+            <div class="endpoint">
+                <h3>Modal System</h3>
+                <pre><code>
+// Show modal
+function showModal(modalId) {
+    const modal = document.getElementById(modalId);
+    modal.style.display = 'block';
+    document.body.classList.add('modal-open');
+}
+
+// Hide modal
+function hideModal(modalId) {
+    const modal = document.getElementById(modalId);
+    modal.style.display = 'none';
+    document.body.classList.remove('modal-open');
+}
+                </code></pre>
+            </div>
+
+            <div class="endpoint">
+                <h3>Notification System</h3>
+                <pre><code>
+// Show success message
+function showSuccessMessage(message) {
+    createNotification(message, 'success');
+}
+
+// Show error message
+function showErrorMessage(message) {
+    createNotification(message, 'error');
+}
+
+function createNotification(message, type) {
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    // Auto remove after 3 seconds
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
+}
+                </code></pre>
+            </div>
+        </section>
+
+        <!-- Data Visualization -->
+        <section class="api-section">
+            <h2>📈 Data Visualization</h2>
+            
+            <div class="endpoint">
+                <h3>Chart Integration</h3>
+                <p>APIs for creating charts and graphs</p>
+                
+                <pre><code>
+// Create chart using Chart.js
+function createChart(canvasId, data, options) {
+    const ctx = document.getElementById(canvasId).getContext('2d');
+    return new Chart(ctx, {
+        type: 'line',
+        data: data,
+        options: options
+    });
+}
+                </code></pre>
+            </div>
+
+            <div class="endpoint">
+                <h3>Data Processing</h3>
+                <pre><code>
+// Process geospatial data for visualization
+function processGeospatialData(rawData) {
+    return rawData.map(item => ({
+        coordinates: [item.lat, item.lng],
+        properties: {
+            name: item.name,
+            value: item.value,
+            timestamp: item.timestamp
+        }
+    }));
+}
+                </code></pre>
+            </div>
+        </section>
+
+        <!-- Error Handling -->
+        <section class="api-section">
+            <h2>⚠️ Error Handling</h2>
+            
+            <div class="endpoint">
+                <h3>Global Error Handler</h3>
+                <pre><code>
+// Global error handling
+window.addEventListener('error', function(e) {
+    console.error('Global error:', e.error);
+    logError({
+        message: e.message,
+        filename: e.filename,
+        lineno: e.lineno,
+        timestamp: new Date().toISOString()
+    });
+});
+
+function logError(errorInfo) {
+    // Log error for debugging
+    console.log('Error logged:', errorInfo);
+    
+    // Could send to error tracking service
+    // sendErrorToService(errorInfo);
+}
+                </code></pre>
+            </div>
+        </section>
+
+        <!-- Performance -->
+        <section class="api-section">
+            <h2>⚡ Performance Optimization</h2>
+            
+            <div class="endpoint">
+                <h3>Lazy Loading</h3>
+                <pre><code>
+// Lazy load images
+function lazyLoadImages() {
+    const images = document.querySelectorAll('img[data-src]');
+    
+    const imageObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
+                img.src = img.dataset.src;
+                img.classList.remove('lazy');
+                observer.unobserve(img);
+            }
+        });
+    });
+    
+    images.forEach(img => imageObserver.observe(img));
+}
+                </code></pre>
+            </div>
+
+            <div class="endpoint">
+                <h3>Debouncing</h3>
+                <pre><code>
+// Debounce function for search inputs
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// Usage example
+const debouncedSearch = debounce(performSearch, 300);
+                </code></pre>
+            </div>
+        </section>
+    </main>
+
+    <footer id="footer.js"></footer>
+    <script src="navbar.js"></script>
+</body>
+</html>
