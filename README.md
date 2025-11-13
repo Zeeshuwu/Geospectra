@@ -61,6 +61,8 @@
     * `tool1-segmentation.html` - Main segmentation tool
     * `tool2-classification.html` - Building classification tool
     * `tools.html` - Tools overview page
+    * `api.html` - Api and references used
+    * 'report-issue.html' - Form report for issues in web
   
 ## 🚀 Quick Start
 
