@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report GeoSpectra Issues - GEOSPECTRA</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .report-container {
+            max-width: 700px;
+            margin: 2rem auto;
+            padding: 0;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+        
+        .report-header {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .report-header h1 {
+            margin: 0 0 1rem 0;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        
+        .report-header p {
+            margin: 0;
+            opacity: 0.95;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .form-content {
+            padding: 2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 2rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 1rem;
+        }
+        
+        .required {
+            color: #e74c3c;
+            font-weight: 700;
+        }
+        
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+        
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #27ae60;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(39, 174, 96, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .form-textarea {
+            resize: vertical;
+            min-height: 140px;
+            line-height: 1.6;
+        }
+        
+        .photo-upload {
+            border: 3px dashed #cbd5e0;
+            border-radius: 12px;
+            padding: 3rem 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: #f7fafc;
+        }
+        
+        .photo-upload:hover {
+            border-color: #27ae60;
+            background: #f0fff4;
+            transform: translateY(-2px);
+        }
+        
+        .photo-upload.dragover {
+            border-color: #27ae60;
+            background: #e6fffa;
+            transform: scale(1.02);
+        }
+        
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+        
+        .upload-text {
+            color: #4a5568;
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        
+        .upload-limit {
+            font-size: 0.9rem;
+            color: #718096;
+        }
+
+        .help-text {
+            font-size: 0.9rem;
+            color: #6b7280;
+            margin-bottom: 0.75rem;
+            line-height: 1.5;
+        }
+        
+        .severity-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .severity-option {
+            position: relative;
+        }
+        
+        .severity-input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+        }
+        
+        .severity-label {
+            display: block;
+            padding: 1rem;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            background: #f8f9fa;
+        }
+
+        .severity-label:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .severity-input:checked + .severity-label {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .severity-low:checked + .severity-label { 
+            border-color: #10b981; 
+            background: #ecfdf5; 
+            color: #047857; 
+        }
+        .severity-medium:checked + .severity-label { 
+            border-color: #f59e0b; 
+            background: #fffbeb; 
+            color: #d97706; 
+        }
+        .severity-high:checked + .severity-label { 
+            border-color: #ef4444; 
+            background: #fef2f2; 
+            color: #dc2626; 
+        }
+        .severity-urgent:checked + .severity-label { 
+            border-color: #dc2626; 
+            background: #fef2f2; 
+            color: #991b1b; 
+        }
+        
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            border: none;
+            padding: 1.25rem 2rem;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(231, 76, 60, 0.4);
+        }
+        
+        .submit-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .preview-images {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .preview-item {
+            position: relative;
+            aspect-ratio: 1;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .preview-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .remove-image {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.2s ease;
+        }
+
+        .remove-image:hover {
+            background: #dc2626;
+            transform: scale(1.1);
+        }
+        
+        .character-count {
+            text-align: right;
+            font-size: 0.85rem;
+            color: #9ca3af;
+            margin-top: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .success-message, .error-message {
+            padding: 1.25rem;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            display: none;
+        }
+
+        .success-message {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+        
+        .error-message {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #ffffff;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 0.75rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .file-info {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 0.75rem;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        @media (max-width: 768px) {
+            .report-container {
+                margin: 1rem;
+                border-radius: 12px;
+            }
+
+            .report-header {
+                padding: 1.5rem;
+            }
+
+            .report-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .form-content {
+                padding: 1.5rem;
+            }
+
+            .severity-options {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .photo-upload {
+                padding: 2rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <custom-navbar></custom-navbar>
+    
+    <div class="report-container">
+        <div class="report-header">
+            <h1>🚨 Report GeoSpectra Issues</h1>
+            <p>Your insight keeps Geospectra accurate.<br>
+            Spot something off? Report map errors or technical issues and help us build a better geospatial experience for everyone.</p>
+        </div>
+        
+        <div class="form-content">
+            <div class="success-message" id="successMessage">
+                ✅ Thank you for your report! We'll review your submission and get back to you soon at your email address.
+            </div>
+            
+            <div class="error-message" id="errorMessage">
+                ❌ Please fill in all required fields before submitting.
+            </div>
+            
+            <form id="reportForm">
+                <div class="form-group">
+                    <label for="userName" class="form-label">Your Full Name <span class="required">*</span></label>
+                    <input type="text" id="userName" name="user_name" class="form-input" required placeholder="Enter your full name">
+                </div>
+
+                <div class="form-group">
+                    <label for="userEmail" class="form-label">Your Email Address <span class="required">*</span></label>
+                    <input type="email" id="userEmail" name="user_email" class="form-input" required placeholder="your.email@example.com">
+                    <div class="help-text">We'll use this to follow up on your report</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="institution" class="form-label">Institution/Organization <span class="required">*</span></label>
+                    <select id="institution" name="institution" class="form-select" required>
+                        <option value="">-Please select your institution type-</option>
+                        <option value="University">University</option>
+                        <option value="Research Institute">Research Institute</option>
+                        <option value="Government Agency">Government Agency</option>
+                        <option value="Private Company">Private Company</option>
+                        <option value="Non-Governmental Organization">Non-Governmental Organization</option>
+                        <option value="Individual User">Individual User</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">📸 Upload Photos (Optional)</label>
+                    <div class="help-text">Include up to three photos of the issue to help us understand the problem better. Each file must be under 5MB.</div>
+                    <div class="photo-upload" id="photoUpload">
+                        <div class="upload-icon">📷</div>
+                        <div class="upload-text">Drop images here or click to select</div>
+                        <div class="upload-limit">Maximum 3 files • JPG, PNG, GIF • 5MB each</div>
+                        <input type="file" id="photoInput" accept="image/*" multiple style="display: none;">
+                    </div>
+                    <div class="preview-images" id="previewImages"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="description" class="form-label">📝 Issue Description</label>
+                    <div class="help-text">Please provide a detailed description of the issue you encountered. Include steps to reproduce the problem if applicable.</div>
+                    <textarea id="description" name="description" class="form-textarea" maxlength="1000" placeholder="Describe the issue you encountered in detail..."></textarea>
+                    <div class="character-count">
+                        <span id="charCount">0</span>/1000 characters
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">⚠️ Severity Level</label>
+                    <div class="help-text">How critical is this issue? This helps us prioritize our response.</div>
+                    <div class="severity-options">
+                        <div class="severity-option">
+                            <input type="radio" id="low" name="severity" value="Low" class="severity-input severity-low">
+                            <label for="low" class="severity-label">🟢 Low<br><small>Minor issue</small></label>
+                        </div>
+                        <div class="severity-option">
+                            <input type="radio" id="medium" name="severity" value="Medium" class="severity-input severity-medium" checked>
+                            <label for="medium" class="severity-label">🟡 Medium<br><small>Moderate issue</small></label>
+                        </div>
+                        <div class="severity-option">
+                            <input type="radio" id="high" name="severity" value="High" class="severity-input severity-high">
+                            <label for="high" class="severity-label">🟠 High<br><small>Significant issue</small></label>
+                        </div>
+                        <div class="severity-option">
+                            <input type="radio" id="urgent" name="severity" value="Urgent" class="severity-input severity-urgent">
+                            <label for="urgent" class="severity-label">🔴 Urgent<br><small>Critical issue</small></label>
+                        </div>
+                    </div>
+                </div>
+                
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    📤 Submit Report
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <script src="navbar.js"></script>
+    <script src="report-form-email.js"></script>
+</body>
+</html>
