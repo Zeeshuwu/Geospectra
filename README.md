@@ -7,7 +7,7 @@
 [![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![MapLibre GL JS](https://img.shields.io/badge/MapLibre_GL_JS-396CB2?style=flat&logo=maplibre&logoColor=white)](https://maplibre.org/)
 
-**GEOSPECTRA** is a cutting-edge web-based platform for advanced geospatial analysis, specializing in AI-powered roof segmentation, building classification, and 3D solar potential analysis. Built for the ASEAN Geospatial Challenge, this platform combines satellite imagery processing with machine learning to deliver precise spatial intelligence.
+**GEOSPECTRA** is a cutting-edge web-based platform for advanced geospatial analysis, specializing in AI-powered roof segmentation, building classification, and 3D solar potential analysis. Built for the ASEAN Geospatial Challenge, this platform combines satellite imagery processing with deep learning to deliver precise spatial intelligence.
 
 ##  Features
 
@@ -22,7 +22,7 @@
 - **Statistical Insights**: Comprehensive building analytics and metrics
 - **Export Capabilities**: Download results in multiple formats
 
-### ☀️ **3D Solar Analysis**
+###  **3D Solar Analysis**
 - **Solar Potential Mapping**: Advanced 3D analysis for solar panel placement
 - **Shadow Analysis**: Comprehensive shadow modeling throughout the year
 - **Energy Estimation**: Accurate solar energy potential calculations
@@ -35,7 +35,7 @@
 - **Mapping**: MapLibre GL JS for interactive maps
 - **Icons**: Feather Icons for consistent UI elements
 - **Fonts**: Inter font family for modern typography
-- **AI Models**: U-Net architecture for segmentation
+- **AI Models**: U-Net architecture for segmentation and classification
 - **Data Sources**: Google Satellite, OpenStreetMap, Landsat 8
 
 ### Project Structure
@@ -62,7 +62,7 @@
     * `tool2-classification.html` - Building classification tool
     * `tools.html` - Tools overview page
     * `api.html` - Api and references used
-    * 'report-issue.html' - Form report for issues in web
+    * `report-issue.html` - Form report for issues in web
   
 ## 🚀 Quick Start
 
@@ -94,9 +94,9 @@
    - Draw your region of interest
    - Run the analysis
 
-## 📖 Usage Guide
+##  Usage Guide
 
-### 🎯 **Roof Segmentation Workflow**
+###  **Roof Segmentation Workflow**
 
 1. **Select Analysis Area**
    - Choose your preferred basemap (Satellite/OSM/Terrain)
@@ -118,21 +118,21 @@
    - Export statistical data
    - Continue to classification workflow
 
-### 🏗️ **Building Classification**
+###  **Building Classification**
 
 1. Import segmentation results or upload new imagery
 2. Configure classification parameters
 3. Run AI-powered building type detection
 4. Review and export classification results
 
-### ☀️ **3D Solar Analysis**
+###  **3D Solar Analysis**
 
 1. Load 3D building models
 2. Configure solar analysis parameters
 3. Run comprehensive solar potential analysis
 4. Explore interactive 3D visualizations
 
-## 🌟 Key Capabilities
+##  Key Capabilities
 
 - **🎯 Precision**: Sub-meter accuracy in building detection
 - **⚡ Speed**: Real-time processing with optimized algorithms
@@ -141,7 +141,7 @@
 - **🔄 Integration**: Seamless workflow between analysis tools
 - **📱 Responsive**: Works on desktop, tablet, and mobile devices
 
-## 🏆 ASEAN Geospatial Challenge
+##  ASEAN Geospatial Challenge
 
 This platform was developed for the **ASEAN Geospatial Challenge**, focusing on:
 - Advanced spatial intelligence solutions
@@ -150,7 +150,7 @@ This platform was developed for the **ASEAN Geospatial Challenge**, focusing on:
 - Solar energy potential mapping
 - Smart city applications
 
-## 👥 Team
+##  Team
 
 **GEOSPECTRA Team**
 - Mohammad Zulfi Rahadi Putra
@@ -161,8 +161,8 @@ This platform was developed for the **ASEAN Geospatial Challenge**, focusing on:
 - Universitas Gadjah Mada
 - Yogyakarta, Indonesia
 
-## 📊 Performance Metrics
+##  Performance Metrics
 
 
 - **Processing Speed**: < 10 seconds for typical ROI
-- **Resolution Support**: 0.5m/pixel to 30m/pixel
+- **Resolution Support**: 0.5m/pixel trained using Bing satellite maps
