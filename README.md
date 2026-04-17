@@ -141,14 +141,7 @@
 - **🔄 Integration**: Seamless workflow between analysis tools
 - **📱 Responsive**: Works on desktop, tablet, and mobile devices
 
-##  ASEAN Geospatial Challenge
 
-This platform was developed for the **ASEAN Geospatial Challenge**, focusing on:
-- Advanced spatial intelligence solutions
-- AI-powered geospatial analysis
-- Sustainable urban development
-- Solar energy potential mapping
-- Smart city applications
 
 ##  Team
 
