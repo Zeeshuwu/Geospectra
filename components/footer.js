@@ -219,10 +219,6 @@ class CustomFooter extends HTMLElement {
                 <img src="images/Logo UGM.jpeg" alt="Universitas Gadjah Mada Logo" class="logo-image">
                 <div class="logo-text">Universitas Gadjah Mada</div>
               </div>
-              <div class="logo-item">
-                <img src="images/Logo AGC.png" alt="ASEAN Geospatial Challenge Logo" class="logo-image">
-                <div class="logo-text">ASEAN Geospatial Challenge</div>
-              </div>
             </div>
           </div>
           
